@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Métro Paris" />
+  <meta name="theme-color" content="0d0d0d" />
+  <title>Mon Métro Parisien</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0d0d0d;
+      --surface: #161616;
+      --border: rgba(255,255,255,0.07);
+      --text: #f0ece4;
+      --muted: rgba(240,236,228,0.4);
+      --accent: #f0ece4;
+
+      /* Couleurs officielles RATP */
+      --l1:  #FFCD00;
+      --l2:  #003CA6;
+      --l3:  #837902;
+      --l3b: #6EC4E8;
+      --l4:  #CF009E;
+      --l5:  #FF7E2E;
+      --l6:  #6ECA97;
+      --l7:  #FA9ABA;
+      --l7b: #6ECA97;
+      --l8:  #E19BDF;
+      --l9:  #B6BD00;
+      --l10: #C9910D;
+      --l11: #704B1C;
+      --l12: #007852;
+      --l13: #98D4E2;
+      --l14: #662483;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100dvh;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: env(safe-area-inset-top, 0) 0 0;
+      background: var(--bg);
+    }
+
+    .header-inner {
+      padding: 20px 20px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .logo-m {
+      width: 38px; height: 38px;
+      background: var(--l14);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      color: #fff;
+      flex-shrink: 0;
+      box-shadow: 0 0 20px rgba(102,36,131,0.5);
+    }
+
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(28px, 7vw, 38px);
+      letter-spacing: 0.04em;
+      line-height: 1;
+      color: var(--text);
+    }
+
+    .subtitle {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    /* ── PROGRESS BAR ── */
+    .progress-wrap {
+      padding: 14px 20px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .progress-stats {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 8px;
+    }
+
+    .progress-count {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      letter-spacing: 0.02em;
+    }
+
+    .progress-count span {
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--muted);
+      font-weight: 300;
+    }
+
+    .progress-pct {
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    .progress-track {
+      height: 4px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--l14), var(--l4), var(--l1));
+      border-radius: 2px;
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ── LIST ── */
+    main {
+      padding: 12px 16px 40px;
+      padding-bottom: calc(40px + env(safe-area-inset-bottom, 0));
+    }
+
+    .line-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      margin-bottom: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.12s ease, background 0.2s ease, border-color 0.2s ease;
+      -webkit-user-select: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .line-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      border-radius: 14px 0 0 14px;
+      background: var(--line-color);
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+
+    .line-card:active {
+      transform: scale(0.98);
+    }
+
+    .line-card.done {
+      background: rgba(255,255,255,0.03);
+      border-color: rgba(255,255,255,0.04);
+    }
+
+    .line-card.done::before {
+      opacity: 1;
+    }
+
+    /* Bubble numéro de ligne */
+    .line-badge {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      background: var(--line-color);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px;
+      color: var(--badge-text, #fff);
+      flex-shrink: 0;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+    }
+
+    .line-card.done .line-badge {
+      box-shadow: 0 0 18px var(--line-glow);
+    }
+
+    .line-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .line-name {
+      font-weight: 500;
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: color 0.2s;
+    }
+
+    .line-card.done .line-name {
+      color: var(--muted);
+    }
+
+    .line-termini {
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 300;
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Checkbox custom */
+    .check-box {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.15);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .line-card.done .check-box {
+      background: var(--line-color);
+      border-color: var(--line-color);
+    }
+
+    .check-box svg {
+      width: 13px; height: 13px;
+      opacity: 0;
+      transform: scale(0);
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s;
+    }
+
+    .line-card.done .check-box svg {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: calc(24px + env(safe-area-inset-bottom, 0));
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--text);
+      color: var(--bg);
+      padding: 10px 20px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+      z-index: 999;
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ── CONFETTI pulse on 100% ── */
+    @keyframes pulse-bg {
+      0%, 100% { background: var(--bg); }
+      50% { background: #1a0f1f; }
+    }
+
+    body.completed {
+      animation: pulse-bg 2s ease-in-out 3;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo-row">
+      <div class="logo-m">M</div>
+      <h1>Mon Métro</h1>
+    </div>
+    <p class="subtitle">Lignes parcourues &mdash; Paris</p>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-stats">
+      <div class="progress-count">
+        <span id="count-done">0</span><span> / 14 lignes</span>
+      </div>
+      <div class="progress-pct" id="pct">0%</div>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+  </div>
+</header>
+
+<main id="list"></main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const LINES = [
+    { id: 1,   num: "1",   name: "Ligne 1",   termini: "La Défense ↔ Château de Vincennes", color: "#FFCD00", text: "#1a1a1a" },
+    { id: 2,   num: "2",   name: "Ligne 2",   termini: "Porte Dauphine ↔ Nation",           color: "#003CA6", text: "#fff" },
+    { id: 3,   num: "3",   name: "Ligne 3",   termini: "Pont de Levallois ↔ Gallieni",       color: "#837902", text: "#fff" },
+    { id: 4,   num: "3b",  name: "Ligne 3bis", termini: "Gambetta ↔ Porte des Lilas",        color: "#6EC4E8", text: "#1a1a1a" },
+    { id: 5,   num: "4",   name: "Ligne 4",   termini: "Porte de Clignancourt ↔ Bagneux",   color: "#CF009E", text: "#fff" },
+    { id: 6,   num: "5",   name: "Ligne 5",   termini: "Bobigny ↔ Place d'Italie",           color: "#FF7E2E", text: "#fff" },
+    { id: 7,   num: "6",   name: "Ligne 6",   termini: "Charles de Gaulle–Étoile ↔ Nation", color: "#6ECA97", text: "#1a1a1a" },
+    { id: 8,   num: "7",   name: "Ligne 7",   termini: "La Courneuve ↔ Villejuif / Mairie d'Ivry", color: "#FA9ABA", text: "#1a1a1a" },
+    { id: 9,   num: "7b",  name: "Ligne 7bis", termini: "Louis Blanc ↔ Pré-Saint-Gervais",  color: "#6ECA97", text: "#1a1a1a" },
+    { id: 10,  num: "8",   name: "Ligne 8",   termini: "Balard ↔ Pointe du Lac",             color: "#E19BDF", text: "#1a1a1a" },
+    { id: 11,  num: "9",   name: "Ligne 9",   termini: "Pont de Sèvres ↔ Mairie de Montreuil", color: "#B6BD00", text: "#1a1a1a" },
+    { id: 12,  num: "10",  name: "Ligne 10",  termini: "Boulogne ↔ Gare d'Austerlitz",       color: "#C9910D", text: "#fff" },
+    { id: 13,  num: "11",  name: "Ligne 11",  termini: "Châtelet ↔ Rosny-Bois-Perrier",      color: "#704B1C", text: "#fff" },
+    { id: 14,  num: "12",  name: "Ligne 12",  termini: "Aubervilliers ↔ Mairie d'Issy",      color: "#007852", text: "#fff" },
+    { id: 15,  num: "13",  name: "Ligne 13",  termini: "Châtillon ↔ Saint-Denis / Asnières", color: "#98D4E2", text: "#1a1a1a" },
+    { id: 16,  num: "14",  name: "Ligne 14",  termini: "Orly ↔ Saint-Denis Pleyel",          color: "#662483", text: "#fff" },
+  ];
+
+  const STORAGE_KEY = 'metro_paris_v1';
+
+  function loadState() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+    catch { return {}; }
+  }
+
+  function saveState(state) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  let state = loadState();
+
+  function updateProgress() {
+    const total = LINES.length;
+    const done = LINES.filter(l => state[l.id]).length;
+    const pct = Math.round((done / total) * 100);
+    document.getElementById('count-done').textContent = done;
+    document.getElementById('pct').textContent = pct + '%';
+    document.getElementById('progress-fill').style.width = pct + '%';
+    if (pct === 100) {
+      document.body.classList.add('completed');
+      setTimeout(() => document.body.classList.remove('completed'), 6500);
+    }
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  function toggleLine(id) {
+    state[id] = !state[id];
+    saveState(state);
+    renderCard(id);
+    updateProgress();
+    const line = LINES.find(l => l.id === id);
+    if (state[id]) {
+      showToast('✓ ' + line.name + ' faite !');
+    }
+  }
+
+  function renderCard(id) {
+    const line = LINES.find(l => l.id === id);
+    const card = document.querySelector(`[data-id="${id}"]`);
+    if (!card) return;
+    if (state[id]) card.classList.add('done');
+    else card.classList.remove('done');
+  }
+
+  function buildList() {
+    const list = document.getElementById('list');
+    list.innerHTML = '';
+    LINES.forEach(line => {
+      const done = state[line.id];
+      const card = document.createElement('div');
+      card.className = 'line-card' + (done ? ' done' : '');
+      card.dataset.id = line.id;
+      card.style.setProperty('--line-color', line.color);
+      card.style.setProperty('--badge-text', line.text);
+      card.style.setProperty('--line-glow', line.color + '55');
+
+      card.innerHTML = `
+        <div class="line-badge">${line.num}</div>
+        <div class="line-info">
+          <div class="line-name">${line.name}</div>
+          <div class="line-termini">${line.termini}</div>
+        </div>
+        <div class="check-box">
+          <svg viewBox="0 0 13 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1.5 5L5 8.5L11.5 1.5" stroke="${line.text === '#fff' ? '#fff' : '#1a1a1a'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      `;
+
+      card.addEventListener('click', () => toggleLine(line.id));
+      list.appendChild(card);
+    });
+  }
+
+  buildList();
+  updateProgress();
+</script>
+</body>
+</html>
