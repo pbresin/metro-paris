@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Mon Réseau IDF" />
+  <meta name="theme-color" content="#0d0d0d" />
+  <title>Mon Réseau Île-de-France</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root { --bg:#0d0d0d; --surface:#161616; --surface2:#1e1e1e; --border:rgba(255,255,255,0.07); --text:#f0ece4; --muted:rgba(240,236,228,0.4); }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100dvh;-webkit-tap-highlight-color:transparent}
+    header{position:sticky;top:0;z-index:100;background:var(--bg);padding-top:env(safe-area-inset-top,0);border-bottom:1px solid var(--border)}
+    .header-top{display:flex;align-items:center;gap:10px;padding:16px 16px 10px}
+    .logo-m{width:34px;height:34px;background:#662483;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:20px;color:#fff;flex-shrink:0;box-shadow:0 0 16px rgba(102,36,131,.5)}
+    h1{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:.04em;flex:1}
+    .global-count{font-size:12px;color:var(--muted);letter-spacing:.06em;white-space:nowrap}
+    .search-wrap{padding:0 16px 12px}
+    .search-box{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:9px 12px}
+    .search-box svg{flex-shrink:0;opacity:.4}
+    .search-box input{background:none;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;width:100%}
+    .search-box input::placeholder{color:var(--muted)}
+    .clear-btn{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;padding:0 2px;display:none}
+    main{padding:12px 16px calc(40px + env(safe-area-inset-bottom,0))}
+    .section{margin-bottom:10px;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--surface)}
+    .section-header{display:flex;align-items:center;gap:10px;padding:14px 16px 10px;cursor:pointer;user-select:none;-webkit-user-select:none}
+    .section-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+    .section-title-wrap{flex:1;min-width:0}
+    .section-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.04em;line-height:1.1}
+    .section-subtitle{font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:1px}
+    .section-chevron{color:var(--muted);transition:transform .3s ease;flex-shrink:0}
+    .section.open .section-chevron{transform:rotate(180deg)}
+    .section-progress{padding:0 16px 12px}
+    .section-prog-row{display:flex;justify-content:space-between;margin-bottom:5px}
+    .section-prog-count{font-size:12px;color:var(--muted)}
+    .section-prog-pct{font-size:12px;font-weight:500}
+    .prog-track{height:3px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden}
+    .prog-fill{height:100%;border-radius:2px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+    .section-body{max-height:0;overflow:hidden;transition:max-height .45s cubic-bezier(.4,0,.2,1)}
+    .section.open .section-body{max-height:999999px}
+    .section-lines{padding:0 12px 12px}
+    .line-card{display:flex;align-items:center;gap:12px;padding:11px 12px;margin-bottom:6px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;cursor:pointer;user-select:none;-webkit-user-select:none;transition:transform .1s ease,opacity .2s ease;position:relative;overflow:hidden}
+    .line-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--line-color,#555);opacity:.7}
+    .line-card:active{transform:scale(.98)}
+    .line-card.done{opacity:.55}
+    .line-card.done::before{opacity:1}
+    .line-card.hidden{display:none}
+    .line-badge{width:36px;height:36px;border-radius:50%;background:var(--line-color,#555);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:14px;color:var(--badge-text,#fff);flex-shrink:0}
+    .line-card.done .line-badge{box-shadow:0 0 12px var(--line-glow,transparent)}
+    .line-info{flex:1;min-width:0}
+    .line-name{font-weight:500;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .line-termini{font-size:11px;color:var(--muted);font-weight:300;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .check-box{width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .25s cubic-bezier(.34,1.56,.64,1)}
+    .line-card.done .check-box{background:var(--line-color);border-color:var(--line-color)}
+    .check-box svg{width:11px;height:11px;opacity:0;transform:scale(0);transition:all .2s cubic-bezier(.34,1.56,.64,1) .05s}
+    .line-card.done .check-box svg{opacity:1;transform:scale(1)}
+    .no-results{text-align:center;padding:40px 20px;color:var(--muted);font-size:14px;display:none}
+    .toast{position:fixed;bottom:calc(24px + env(safe-area-inset-bottom,0));left:50%;transform:translateX(-50%) translateY(80px);background:var(--text);color:#0d0d0d;padding:9px 18px;border-radius:50px;font-size:13px;font-weight:500;white-space:nowrap;z-index:999;transition:transform .35s cubic-bezier(.34,1.56,.64,1);pointer-events:none}
+    .toast.show{transform:translateX(-50%) translateY(0)}
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-top">
+    <div class="logo-m">M</div>
+    <h1>Mon Réseau IDF</h1>
+    <div class="global-count" id="global-count">0 / 0</div>
+  </div>
+  <div class="search-wrap">
+    <div class="search-box">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#f0ece4" stroke-width="1.5"/><path d="M10.5 10.5L13.5 13.5" stroke="#f0ece4" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <input type="text" id="search-input" placeholder="Rechercher une ligne…" autocomplete="off" autocorrect="off" spellcheck="false"/>
+      <button class="clear-btn" id="clear-btn">×</button>
+    </div>
+  </div>
+</header>
+<main id="main"><div class="no-results" id="no-results">Aucune ligne trouvée</div></main>
+<div class="toast" id="toast"></div>
+<script>
+// Couleur or uniforme pour tous les bus
+const BUS = {color:'#B8960C', text:'#1a1a1a'};
+function b(id,num,name,termini){return{id:'b'+id,num,name,termini,color:BUS.color,text:BUS.text};}
+
+const SECTIONS=[
+  // ── RER & TRAINS ──────────────────────────────────────────────
+  {id:'rer',title:'RER & Trains',subtitle:'Grande couronne',icon:'🚆',iconBg:'#1a2a1a',accentColor:'#4CAF50',lines:[
+    {id:'ra', num:'A',name:'RER A',        termini:'Cergy / Poissy ↔ Boissy / Marne-la-Vallée',       color:'#E2231A',text:'#fff'},
+    {id:'rb', num:'B',name:'RER B',        termini:'Aéroport CDG / Mitry ↔ Robinson / St-Rémy',       color:'#4FA5DC',text:'#fff'},
+    {id:'rc', num:'C',name:'RER C',        termini:'Pontoise / Versailles ↔ Juvisy / Massy',          color:'#F3C300',text:'#1a1a1a'},
+    {id:'rd', num:'D',name:'RER D',        termini:'Orry-la-Ville ↔ Melun / Malesherbes',             color:'#0B8140',text:'#fff'},
+    {id:'re', num:'E',name:'RER E',        termini:'Mantes-la-Jolie ↔ Tournan-en-Brie',               color:'#B26DAA',text:'#fff'},
+    {id:'th', num:'H',name:'Transilien H', termini:'Paris Nord ↔ Pontoise / Creil / Persan',          color:'#7B4F8C',text:'#fff'},
+    {id:'tj', num:'J',name:'Transilien J', termini:'Paris Saint-Lazare ↔ Versailles / Mantes',        color:'#D4A62B',text:'#1a1a1a'},
+    {id:'tk', num:'K',name:'Transilien K', termini:'Paris Nord ↔ Crépy-en-Valois',                    color:'#6F6F6F',text:'#fff'},
+    {id:'tl', num:'L',name:'Transilien L', termini:'Paris Saint-Lazare ↔ Versailles / St-Nom',        color:'#9B59B6',text:'#fff'},
+    {id:'tn', num:'N',name:'Transilien N', termini:'Paris Montparnasse ↔ Rambouillet / Dreux',        color:'#2C3E50',text:'#fff'},
+    {id:'tpp',num:'P',name:'Transilien P', termini:'Paris Est ↔ Meaux / Provins / La Ferté',          color:'#E67E22',text:'#fff'},
+    {id:'tr', num:'R',name:'Transilien R', termini:'Gare de Lyon ↔ Montereau / Montargis',            color:'#C0392B',text:'#fff'},
+    {id:'tu', num:'U',name:'Transilien U', termini:'La Verrière ↔ La Défense',                        color:'#1ABC9C',text:'#fff'},
+  ]},
+  // ── MÉTRO ─────────────────────────────────────────────────────
+  // 20 lignes au total : 1-14 + 3bis + 7bis + 15-18 GPE
+  {id:'metro',title:'Métro',subtitle:'Paris & Grand Paris Express',icon:'M',iconBg:'#1a0f1f',accentColor:'#662483',isMetroIcon:true,lines:[
+    {id:'m1', num:'1',  name:'Ligne 1',    termini:'La Défense ↔ Château de Vincennes',               color:'#FFCD00',text:'#1a1a1a'},
+    {id:'m2', num:'2',  name:'Ligne 2',    termini:'Porte Dauphine ↔ Nation',                         color:'#003CA6',text:'#fff'},
+    {id:'m3', num:'3',  name:'Ligne 3',    termini:'Pont de Levallois ↔ Gallieni',                    color:'#837902',text:'#fff'},
+    {id:'m3b',num:'3b', name:'Ligne 3bis', termini:'Gambetta ↔ Porte des Lilas',                      color:'#6EC4E8',text:'#1a1a1a'},
+    {id:'m4', num:'4',  name:'Ligne 4',    termini:'Porte de Clignancourt ↔ Bagneux',                 color:'#CF009E',text:'#fff'},
+    {id:'m5', num:'5',  name:'Ligne 5',    termini:"Bobigny ↔ Place d'Italie",                        color:'#FF7E2E',text:'#fff'},
+    {id:'m6', num:'6',  name:'Ligne 6',    termini:'Charles de Gaulle–Étoile ↔ Nation',               color:'#6ECA97',text:'#1a1a1a'},
+    {id:'m7', num:'7',  name:'Ligne 7',    termini:"La Courneuve ↔ Villejuif / Mairie d'Ivry",        color:'#FA9ABA',text:'#1a1a1a'},
+    {id:'m7b',num:'7b', name:'Ligne 7bis', termini:'Louis Blanc ↔ Pré-Saint-Gervais',                 color:'#5BBFE0',text:'#1a1a1a'},
+    {id:'m8', num:'8',  name:'Ligne 8',    termini:'Balard ↔ Pointe du Lac',                          color:'#E19BDF',text:'#1a1a1a'},
+    {id:'m9', num:'9',  name:'Ligne 9',    termini:'Pont de Sèvres ↔ Mairie de Montreuil',            color:'#B6BD00',text:'#1a1a1a'},
+    {id:'m10',num:'10', name:'Ligne 10',   termini:"Boulogne ↔ Gare d'Austerlitz",                    color:'#C9910D',text:'#fff'},
+    {id:'m11',num:'11', name:'Ligne 11',   termini:'Châtelet ↔ Rosny-Bois-Perrier',                   color:'#704B1C',text:'#fff'},
+    {id:'m12',num:'12', name:'Ligne 12',   termini:"Aubervilliers ↔ Mairie d'Issy",                   color:'#007852',text:'#fff'},
+    {id:'m13',num:'13', name:'Ligne 13',   termini:'Châtillon ↔ Saint-Denis / Asnières',              color:'#98D4E2',text:'#1a1a1a'},
+    {id:'m14',num:'14', name:'Ligne 14',   termini:'Orly ↔ Saint-Denis Pleyel',                       color:'#662483',text:'#fff'},
+    {id:'m15',num:'15', name:'Ligne 15',   termini:'Pont de Sèvres ↔ Noisy–Champs (GPE)',             color:'#C2A000',text:'#1a1a1a'},
+    {id:'m16',num:'16', name:'Ligne 16',   termini:'Saint-Denis Pleyel ↔ Noisy–Champs (GPE)',         color:'#E05206',text:'#fff'},
+    {id:'m17',num:'17', name:'Ligne 17',   termini:'Saint-Denis Pleyel ↔ Le Mesnil-Amelot (GPE)',     color:'#D4A400',text:'#1a1a1a'},
+    {id:'m18',num:'18', name:'Ligne 18',   termini:"Aéroport d'Orly ↔ Versailles Chantiers (GPE)",   color:'#00814A',text:'#fff'},
+  ]},
+  // ── TRAMWAYS ──────────────────────────────────────────────────
+  {id:'tram',title:'Tramways',subtitle:'Petite couronne',icon:'🚋',iconBg:'#0d1a1a',accentColor:'#00A89D',lines:[
+    {id:'t1', num:'T1', name:'Tram T1',  termini:'Asnières–Gennevilliers ↔ Noisy-le-Sec',            color:'#00A89D',text:'#fff'},
+    {id:'t2', num:'T2', name:'Tram T2',  termini:'La Défense ↔ Porte de Versailles',                 color:'#E2231A',text:'#fff'},
+    {id:'t3a',num:'T3a',name:'Tram T3a', termini:"Pont du Garigliano ↔ Porte d'Ivry",               color:'#0055A4',text:'#fff'},
+    {id:'t3b',num:'T3b',name:'Tram T3b', termini:"Porte d'Ivry ↔ Porte de la Chapelle",             color:'#003B8E',text:'#fff'},
+    {id:'t4', num:'T4', name:'Tram T4',  termini:'Bondy ↔ Aulnay-sous-Bois / Montfermeil',          color:'#F3A400',text:'#1a1a1a'},
+    {id:'t5', num:'T5', name:'Tram T5',  termini:'Marché de Saint-Denis ↔ Garges–Sarcelles',        color:'#9B59B6',text:'#fff'},
+    {id:'t6', num:'T6', name:'Tram T6',  termini:'Viroflay ↔ Châtillon–Montrouge',                  color:'#2ECC71',text:'#1a1a1a'},
+    {id:'t7', num:'T7', name:'Tram T7',  termini:'Villejuif–Louis Aragon ↔ Athis-Mons',             color:'#E74C3C',text:'#fff'},
+    {id:'t8', num:'T8', name:'Tram T8',  termini:'Saint-Denis ↔ Épinay / Villetaneuse',             color:'#3498DB',text:'#fff'},
+    {id:'t9', num:'T9', name:'Tram T9',  termini:'Orly ↔ Porte de Choisy',                          color:'#E67E22',text:'#fff'},
+    {id:'t10',num:'T10',name:'Tram T10', termini:'Antony ↔ Clamart',                                color:'#1ABC9C',text:'#fff'},
+    {id:'t11',num:'T11',name:'Tram T11', termini:'Épinay-sur-Seine ↔ Le Bourget RER',               color:'#8E44AD',text:'#fff'},
+    {id:'t13',num:'T13',name:'Tram T13', termini:'Saint-Germain-en-Laye ↔ Achères / Poissy',        color:'#27AE60',text:'#fff'},
+  ]},
+  // ── BUS RATP (périmètre historique avant 2025) ───────────────
+  {id:'bus',title:'Bus RATP',subtitle:'Paris & Île-de-France',icon:'🚌',iconBg:'#1a1200',accentColor:'#C8A400',lines:[
+    // Paris intra-muros 20-99
+    b('20','20','Bus 20','Gare Saint-Lazare ↔ Gare de Lyon'),
+    b('21','21','Bus 21','Gare Saint-Lazare ↔ Stade Charléty'),
+    b('22','22','Bus 22',"Opéra ↔ Porte de Saint-Cloud"),
+    b('24','24','Bus 24','Gare de Lyon ↔ Porte de Versailles'),
+    b('25','25','Bus 25','Gare de Lyon ↔ Porte de Vincennes'),
+    b('26','26','Bus 26','Gare du Nord ↔ Cours de Vincennes'),
+    b('27','27','Bus 27',"Opéra ↔ Porte de Vitry"),
+    b('28','28','Bus 28',"Porte de Clichy ↔ Porte d'Orléans"),
+    b('29','29','Bus 29','Gare Saint-Lazare ↔ Porte de Montempoivre'),
+    b('30','30','Bus 30','Gare du Nord ↔ Trocadéro'),
+    b('31','31','Bus 31','Gare du Nord ↔ Porte Maillot'),
+    b('32','32','Bus 32','Porte Maillot ↔ Porte des Lilas'),
+    b('38','38','Bus 38',"Gare du Nord ↔ Porte d'Orléans"),
+    b('39','39','Bus 39','Gare du Nord ↔ Issy-les-Moulineaux'),
+    b('40','40','Bus 40',"Gare de l'Est ↔ Porte de la Chapelle"),
+    b('42','42','Bus 42','Gare du Nord ↔ Hôpital Européen G. Pompidou'),
+    b('43','43','Bus 43','Neuilly Bagatelle ↔ Gare du Nord'),
+    b('45','45','Bus 45',"Aubervilliers France-Asie ↔ Opéra"),
+    b('46','46','Bus 46','Gare du Nord ↔ Château de Vincennes'),
+    b('47','47','Bus 47',"Châtelet ↔ Le Fort du Kremlin-Bicêtre"),
+    b('48','48','Bus 48','Porte de Clichy ↔ Porte de Versailles'),
+    b('52','52','Bus 52','Opéra ↔ Pont de Sèvres'),
+    b('54','54','Bus 54',"Gare de l'Est ↔ Porte de Clignancourt"),
+    b('56','56','Bus 56','Rambuteau ↔ Porte de la Chapelle'),
+    b('57','57','Bus 57',"Mairie du 19e ↔ Place d'Italie"),
+    b('58','58','Bus 58','Châtelet ↔ Porte de Gentilly'),
+    b('59','59','Bus 59',"Gare du Nord ↔ Porte d'Orléans"),
+    b('60','60','Bus 60',"Gambetta ↔ Porte d'Asnières"),
+    b('61','61','Bus 61','Gambetta ↔ Alésia'),
+    b('62','62','Bus 62','Porte de Saint-Cloud ↔ Cours de Vincennes'),
+    b('63','63','Bus 63','Porte de la Muette ↔ Gare de Lyon'),
+    b('64','64','Bus 64','Gambetta ↔ Gare Montparnasse'),
+    b('66','66','Bus 66',"Saint-Ouen Les Docks ↔ Opéra"),
+    b('67','67','Bus 67',"Pigalle ↔ Porte d'Orléans"),
+    b('68','68','Bus 68',"Porte de Clichy ↔ Porte d'Orléans"),
+    b('69','69','Bus 69','Champ de Mars ↔ Gambetta'),
+    b('70','70','Bus 70','Pont de Sèvres ↔ Hôtel de Ville'),
+    b('71','71','Bus 71',"Châtelet ↔ Porte d'Ivry"),
+    b('72','72','Bus 72','Hôtel de Ville ↔ Pont de Saint-Cloud'),
+    b('73','73','Bus 73',"Musée d'Orsay ↔ La Défense"),
+    b('74','74','Bus 74','Opéra ↔ Porte de Clichy'),
+    b('75','75','Bus 75','Pont Neuf ↔ Porte de Gentilly'),
+    b('76','76','Bus 76','Opéra ↔ Porte des Lilas'),
+    b('77','77','Bus 77',"Châtelet ↔ Villejuif – Louis Aragon"),
+    b('80','80','Bus 80','Porte de Versailles ↔ Opéra'),
+    b('82','82','Bus 82','Luxembourg ↔ Porte de Versailles'),
+    b('83','83','Bus 83','Friedland–Haussmann ↔ Porte de Choisy'),
+    b('84','84','Bus 84','Montparnasse ↔ Porte de Champerret'),
+    b('85','85','Bus 85','Cité Universitaire ↔ Saint-Sulpice'),
+    b('86','86','Bus 86','Saint-Germain-des-Prés ↔ Place de Rungis'),
+    b('87','87','Bus 87','Champ de Mars ↔ Villejuif'),
+    b('88','88','Bus 88','Montrouge ↔ Opéra'),
+    b('89','89','Bus 89',"Gare d'Austerlitz ↔ Porte de Gentilly"),
+    b('91','91','Bus 91','Montparnasse ↔ Gare de Lyon'),
+    b('92','92','Bus 92','Porte Maillot ↔ Gare Montparnasse'),
+    b('93','93','Bus 93','Suresnes De Gaulle ↔ Invalides'),
+    b('94','94','Bus 94','Porte de Clignancourt ↔ Porte de Vanves'),
+    b('95','95','Bus 95','Montrouge ↔ Porte de Montmartre'),
+    b('96','96','Bus 96',"Montrouge ↔ Gare de l'Est"),
+    b('PC','PC','Bus PC','Pont du Garigliano ↔ Porte Maillot'),
+    // Traverses
+    b('501','501','Traverse Charonne',"Place Gambetta ↔ Porte de Bagnolet"),
+    b('513','513','Traverse Bièvre Montsouris',"Porte d'Italie ↔ Denfert-Rochereau"),
+    b('518','518','Traverse Batignolles-Bichat','Porte de Clichy ↔ Mairie du 17e'),
+    b('519','519','Traverse Ney-Flandre',"Porte de la Villette ↔ Porte de Clignancourt"),
+    // 100-199
+    b('100','100','Bus 100','Joinville-le-Pont RER ↔ Champigny Camping'),
+    b('102','102','Bus 102','Gambetta ↔ Rosny-Bois-Perrier'),
+    b('103','103','Bus 103',"École vétérinaire ↔ Thiais"),
+    b('104','104','Bus 104',"École vétérinaire ↔ Sucy-en-Brie"),
+    b('105','105','Bus 105','Porte des Lilas ↔ Les Pavillons-sous-Bois'),
+    b('106','106','Bus 106','Joinville-le-Pont ↔ Villiers-sur-Marne'),
+    b('107','107','Bus 107','École vétérinaire ↔ Saint-Maur-des-Fossés'),
+    b('108','108','Bus 108','Charenton–Écoles ↔ Créteil Préfecture'),
+    b('109','109','Bus 109','Porte de Charenton ↔ Sucy-Bonneuil RER'),
+    b('110','110','Bus 110','Vincennes ↔ Fontenay-sous-Bois'),
+    b('111','111','Bus 111',"Nation ↔ Fontenay-sous-Bois"),
+    b('112','112','Bus 112','Fontenay-sous-Bois ↔ Champigny-sur-Marne'),
+    b('113','113','Bus 113','Gare de Nogent-sur-Marne ↔ Joinville-le-Pont'),
+    b('114','114','Bus 114','Bry-sur-Marne ↔ Val de Fontenay RER'),
+    b('115','115','Bus 115','Château de Vincennes ↔ Noisy-le-Grand'),
+    b('116','116','Bus 116','Val de Fontenay ↔ Champigny-sur-Marne'),
+    b('117','117','Bus 117','Gare de Fontenay ↔ Noisy-le-Grand'),
+    b('118','118','Bus 118','Vincennes ↔ Maisons-Alfort'),
+    b('119','119','Bus 119','Créteil Université ↔ Melun'),
+    b('120','120','Bus 120','Château de Vincennes ↔ Bry-sur-Marne'),
+    b('121','121','Bus 121','Créteil Université ↔ Maisons-Alfort'),
+    b('122','122','Bus 122','Créteil Préfecture ↔ Villeneuve-Saint-Georges'),
+    b('124','124','Bus 124','Villeneuve-le-Roi ↔ Orly aéroport'),
+    b('125','125','Bus 125','Créteil Préfecture ↔ Orly-Ville'),
+    b('127','127','Bus 127','Sucy-Bonneuil RER ↔ Bonneuil-sur-Marne'),
+    b('128','128','Bus 128','Créteil Pointe du Lac ↔ Boissy-Saint-Léger RER'),
+    b('129','129','Bus 129','Créteil Pointe du Lac ↔ Sucy-Bonneuil RER'),
+    b('130','130','Bus 130','Mairie de Montreuil ↔ Rosny-sous-Bois'),
+    b('131','131','Bus 131','Rosny-sous-Bois ↔ Gagny'),
+    b('132','132','Bus 132','Mairie de Montreuil ↔ Neuilly-Plaisance'),
+    b('133','133','Bus 133','Raincy-Villemomble ↔ Chelles'),
+    b('134','134','Bus 134','Mairie de Montreuil ↔ Montfermeil'),
+    b('135','135','Bus 135','Porte des Lilas ↔ Noisy-le-Grand'),
+    b('136','136','Bus 136','Noisy-le-Grand ↔ Lognes'),
+    b('137','137','Bus 137','Porte des Lilas ↔ Les Lilas'),
+    b('140','140','Bus 140','Gare du Bourget ↔ Chelles'),
+    b('141','141','Bus 141','Saint-Denis ↔ Aulnay-sous-Bois'),
+    b('142','142','Bus 142','Pierrefitte-sur-Seine ↔ Aulnay-sous-Bois'),
+    b('143','143','Bus 143','Gare du Nord ↔ Aulnay-sous-Bois'),
+    b('144','144','Bus 144','Saint-Denis ↔ Villetaneuse'),
+    b('145','145','Bus 145','Saint-Denis ↔ Pierrefitte-sur-Seine'),
+    b('146','146','Bus 146','Saint-Denis Université ↔ Épinay-sur-Seine'),
+    b('147','147','Bus 147','Gare du Nord ↔ Pierrefitte–Stains RER'),
+    b('148','148','Bus 148','Stains ↔ Pierrefitte-Stains RER'),
+    b('149','149','Bus 149','Gare du Nord ↔ Villepinte'),
+    b('150','150','Bus 150','Gare du Nord ↔ Stains – La Cerisaie'),
+    b('151','151','Bus 151','Saint-Denis ↔ Villetaneuse Université'),
+    b('152','152','Bus 152','Saint-Denis ↔ Enghien-les-Bains'),
+    b('153','153','Bus 153','Saint-Denis ↔ Sarcelles'),
+    b('154','154','Bus 154','Saint-Denis ↔ Villiers-le-Bel'),
+    b('155','155','Bus 155','Porte de la Chapelle ↔ Épinay-sur-Seine'),
+    b('156','156','Bus 156','Saint-Denis ↔ Garges-Sarcelles'),
+    b('157','157','Bus 157','Saint-Denis ↔ Soisy-sous-Montmorency'),
+    b('158','158','Bus 158','Porte de la Villette ↔ Blanc-Mesnil'),
+    b('159','159','Bus 159','Porte de la Villette ↔ Drancy'),
+    b('161','161','Bus 161','Porte de la Villette ↔ Bondy'),
+    b('162','162','Bus 162','Bobigny ↔ Noisy-le-Sec'),
+    b('163','163','Bus 163','Porte de la Chapelle ↔ Aulnay-sous-Bois'),
+    b('164','164','Bus 164','Bobigny ↔ Claye-Souilly'),
+    b('165','165','Bus 165','Bobigny ↔ Drancy'),
+    b('166','166','Bus 166','Pantin ↔ Drancy'),
+    b('168','168','Bus 168','Pantin ↔ Le Bourget'),
+    b('169','169','Bus 169','Porte des Lilas ↔ Noisy-le-Sec'),
+    b('170','170','Bus 170','Porte de la Villette ↔ Roissy CDG'),
+    b('171','171','Bus 171',"Porte de Choisy ↔ Villeneuve-Saint-Georges"),
+    b('172','172','Bus 172','Porte de Choisy ↔ Orly aéroport'),
+    b('173','173','Bus 173',"Porte d'Ivry ↔ Thiais"),
+    b('174','174','Bus 174',"Porte d'Ivry ↔ Orly aéroport"),
+    b('175','175','Bus 175',"Villejuif ↔ Thiais"),
+    b('176','176','Bus 176',"Villejuif ↔ Choisy-le-Roi"),
+    b('177','177','Bus 177',"Villejuif ↔ Créteil"),
+    b('178','178','Bus 178',"Villejuif ↔ Vitry-sur-Seine"),
+    b('179','179','Bus 179',"Vitry-sur-Seine ↔ Yerres"),
+    b('180','180','Bus 180',"Porte de Versailles ↔ Rungis"),
+    b('181','181','Bus 181','Porte de Versailles ↔ Chevilly-Larue'),
+    b('182','182','Bus 182',"Porte de Châtillon ↔ Clamart"),
+    b('183','183','Bus 183',"Porte de Châtillon ↔ Massy RER"),
+    b('184','184','Bus 184',"Porte de Versailles ↔ Verrières-le-Buisson"),
+    b('185','185','Bus 185',"Porte de Versailles ↔ Clamart"),
+    b('186','186','Bus 186',"Issy-les-Moulineaux ↔ Clamart"),
+    b('187','187','Bus 187',"Porte de Versailles ↔ Massy RER"),
+    b('188','188','Bus 188',"Porte de Sèvres ↔ Versailles"),
+    b('189','189','Bus 189',"Porte de Sèvres ↔ Sèvres"),
+    b('190','190','Bus 190',"Porte de Sèvres ↔ Sèvres – Ville d'Avray"),
+    b('191','191','Bus 191',"Porte de Saint-Cloud ↔ Sèvres"),
+    b('192','192','Bus 192',"Porte de Saint-Cloud ↔ Vélizy"),
+    b('193','193','Bus 193',"Porte de Châtillon ↔ Montrouge"),
+    b('194','194','Bus 194',"Châtillon–Montrouge ↔ Massy RER"),
+    b('195','195','Bus 195',"Porte de Châtillon ↔ Bagneux"),
+    b('196','196','Bus 196',"Fontenay-aux-Roses ↔ Sceaux"),
+    b('197','197','Bus 197',"Bagneux ↔ Massy RER"),
+    b('198','198','Bus 198',"Porte de Vanves ↔ Bagneux"),
+    b('199','199','Bus 199',"Malakoff Étienne Dolet ↔ Antony RER"),
+    // 200-299
+    b('201','201','Bus 201','Villeneuve-Saint-Georges ↔ Boissy-Saint-Léger'),
+    b('202','202','Bus 202','Créteil Pointe du Lac ↔ Boissy-Saint-Léger'),
+    b('203','203','Bus 203','Boissy-Saint-Léger ↔ Épinay-sur-Orge'),
+    b('205','205','Bus 205','Sucy-Bonneuil RER ↔ Santeny'),
+    b('206','206','Bus 206',"Noisy-le-Grand ↔ Chelles"),
+    b('208','208','Bus 208','Sucy-Bonneuil RER ↔ Limeil-Brévannes'),
+    b('210','210','Bus 210','Villeneuve-Saint-Georges ↔ Villeneuve-le-Roi'),
+    b('211','211','Bus 211',"Chelles ↔ Lagny-sur-Marne"),
+    b('213','213','Bus 213',"Noisy-le-Grand ↔ Torcy"),
+    b('214','214','Bus 214','Boissy-Saint-Léger ↔ Mandres-les-Roses'),
+    b('215','215','Bus 215','Créteil Pointe du Lac ↔ Yerres'),
+    b('216','216','Bus 216',"Nation ↔ Vincennes"),
+    b('217','217','Bus 217','Sucy-Bonneuil RER ↔ Lésigny'),
+    b('218','218','Bus 218',"Créteil Pointe du Lac ↔ Brunoy"),
+    b('220','220','Bus 220',"Noisy-le-Grand ↔ Marne-la-Vallée Chessy"),
+    b('221','221','Bus 221','Villeneuve-Saint-Georges ↔ Combs-la-Ville'),
+    b('222','222','Bus 222','Choisy-le-Roi RER ↔ Orly aéroport'),
+    b('229','229','Bus 229','Mairie de Montreuil ↔ Rosny-sous-Bois'),
+    b('235','235','Bus 235','Saint-Denis ↔ Enghien-les-Bains'),
+    b('237','237','Bus 237',"Épinay-sur-Seine ↔ Cergy-Saint-Christophe"),
+    b('238','238','Bus 238',"Asnières-sur-Seine ↔ Clichy"),
+    b('239','239','Bus 239','Porte de Clichy ↔ Gennevilliers'),
+    b('241','241','Bus 241','La Défense ↔ Gennevilliers'),
+    b('244','244','Bus 244','Nanterre ↔ Gennevilliers'),
+    b('250','250','Bus 250','Nanterre Préfecture ↔ Rueil-Malmaison'),
+    b('252','252','Bus 252',"La Défense ↔ Rueil-Malmaison"),
+    b('253','253','Bus 253',"La Défense ↔ Saint-Germain-en-Laye"),
+    b('254','254','Bus 254','Puteaux ↔ Houilles'),
+    b('255','255','Bus 255',"La Défense ↔ Levallois-Perret"),
+    b('256','256','Bus 256',"Nanterre ↔ Saint-Germain-en-Laye"),
+    b('257','257','Bus 257',"Rueil-Malmaison ↔ Versailles"),
+    b('258','258','Bus 258',"La Défense ↔ Versailles"),
+    b('259','259','Bus 259',"Rueil-Malmaison ↔ Poissy"),
+    b('260','260','Bus 260',"Nanterre ↔ Poissy"),
+    b('261','261','Bus 261',"Nanterre ↔ Carrières-sur-Seine"),
+    b('262','262','Bus 262',"Rueil-Malmaison ↔ Achères"),
+    b('263','263','Bus 263',"Rueil-Malmaison ↔ Maisons-Laffitte"),
+    b('264','264','Bus 264','Bois-Colombes ↔ Nanterre'),
+    b('272','272','Bus 272','Asnières-sur-Seine ↔ Bezons'),
+    b('274','274','Bus 274','Clichy ↔ Argenteuil'),
+    b('275','275','Bus 275',"Asnières-sur-Seine ↔ Sartrouville"),
+    b('276','276','Bus 276','Nanterre ↔ Colombes'),
+    b('278','278','Bus 278','Colombes ↔ Bezons'),
+    b('279','279','Bus 279','Argenteuil ↔ Bezons'),
+    b('283','283','Orlybus',"Orly aéroport ↔ Denfert-Rochereau"),
+    b('285','285','Bus 285',"Villejuif – Louis Aragon ↔ Massy RER"),
+    b('286','286','Bus 286',"Antony RER ↔ Palaiseau"),
+    b('287','287','Bus 287',"Antony RER ↔ Gif-sur-Yvette"),
+    b('289','289','Bus 289',"Palaiseau ↔ Massy RER"),
+    b('290','290','Bus 290',"Massy RER ↔ Palaiseau"),
+    b('291','291','Bus 291',"Massy RER ↔ Orsay"),
+    b('292','292','Bus 292',"Massy RER ↔ Saint-Rémy-lès-Chevreuse"),
+    b('295','295','Bus 295',"Massy RER ↔ Rungis"),
+    b('296','296','Bus 296',"Rungis ↔ Orly aéroport"),
+    b('297','297','Bus 297',"Massy RER ↔ Orly aéroport"),
+    b('299','299','Bus 299',"Massy RER ↔ Versailles"),
+    // 300-399
+    b('302','302','Bus 302','Cergy-Saint-Christophe ↔ Pontoise'),
+    b('303','303','Bus 303',"Pontoise ↔ Osny"),
+    b('304','304','Bus 304',"Cergy ↔ Vauréal"),
+    b('306','306','Bus 306',"Saint-Germain-en-Laye ↔ Cergy"),
+    b('307','307','Bus 307',"Saint-Germain-en-Laye ↔ Pontoise"),
+    b('308','308','Bus 308',"Versailles ↔ Saint-Germain-en-Laye"),
+    b('309','309','Bus 309',"Versailles ↔ Mantes-la-Jolie"),
+    b('310','310','Bus 310',"Versailles ↔ Rambouillet"),
+    b('311','311','Bus 311',"Saint-Quentin-en-Yvelines ↔ Versailles"),
+    b('314','314','Bus 314','Vélizy ↔ Versailles Rive Gauche'),
+    b('319','319','Bus 319',"Versailles ↔ Les Ulis"),
+    b('320','320','Bus 320',"Versailles ↔ Gif-sur-Yvette"),
+    b('321','321','Bus 321',"Versailles ↔ Saclay"),
+    b('323','323','Bus 323',"Versailles ↔ Palaiseau"),
+    b('324','324','Bus 324','Vélizy ↔ Massy RER'),
+    b('326','326','Bus 326',"Versailles ↔ Maurepas"),
+    b('350','350','Bus 350',"Gare du Nord ↔ Roissy CDG"),
+    b('351','351','Bus 351',"Nation ↔ Roissy CDG"),
+    b('352','352','Roissybus',"Opéra ↔ Roissy CDG"),
+    b('359','359','Bus 359',"Goussainville ↔ Roissy CDG"),
+    b('360','360','Bus 360',"Garges-Sarcelles ↔ Roissy CDG"),
+    b('361','361','Bus 361',"Sarcelles ↔ Gonesse"),
+    b('362','362','Bus 362',"Gonesse ↔ Roissy CDG"),
+    b('363','363','Bus 363',"Gonesse ↔ Villiers-le-Bel"),
+    b('366','366','Bus 366',"Épinay-sur-Seine ↔ Roissy CDG"),
+    b('370','370','Bus 370',"Stade de France ↔ Roissy CDG"),
+    b('380','380','Bus 380',"Issy-les-Moulineaux ↔ Massy RER"),
+    b('391','391','Bus 391',"Châtelet ↔ Épinay-sur-Orge"),
+    b('392','392','Bus 392',"Juvisy-sur-Orge ↔ Massy RER"),
+    b('393','393','TVM 393',"Créteil Pointe du Lac ↔ Saint-Maur–Créteil RER"),
+    // 400-499
+    b('401','401','Bus 401','Argenteuil ↔ Franconville'),
+    b('402','402','Bus 402',"Argenteuil ↔ Enghien-les-Bains"),
+    b('403','403','Bus 403',"Argenteuil ↔ Saint-Gratien"),
+    b('404','404','Bus 404',"Argenteuil ↔ Montigny-lès-Cormeilles"),
+    b('405','405','Bus 405',"Argenteuil ↔ Houilles"),
+    b('406','406','Bus 406',"Argenteuil ↔ Bezons"),
+    b('407','407','Bus 407',"Argenteuil ↔ Sartrouville"),
+    b('408','408','Bus 408',"Argenteuil ↔ Cormeilles-en-Parisis"),
+    b('409','409','Bus 409',"Houilles ↔ Sartrouville"),
+    b('410','410','Bus 410',"Poissy ↔ Saint-Germain-en-Laye"),
+    b('411','411','Bus 411',"Poissy ↔ Conflans-Sainte-Honorine"),
+    b('413','413','Bus 413',"Poissy ↔ Mantes-la-Jolie"),
+    b('415','415','Bus 415',"Conflans-Sainte-Honorine ↔ Cergy"),
+    b('421','421','Bus 421',"Versailles ↔ Saint-Quentin-en-Yvelines"),
+    b('426','426','Bus 426',"Saint-Quentin-en-Yvelines ↔ Les Clayes-sous-Bois"),
+    b('427','427','Bus 427',"Saint-Quentin-en-Yvelines ↔ Rambouillet"),
+    b('430','430','Bus 430',"Massy ↔ Gif-sur-Yvette"),
+    b('431','431','Bus 431',"Orsay ↔ Les Ulis"),
+    b('432','432','Bus 432',"Massy ↔ Palaiseau"),
+    b('441','441','Bus 441',"Évry ↔ Melun"),
+    b('442','442','Bus 442',"Évry ↔ Corbeil-Essonnes"),
+    b('443','443','Bus 443',"Évry ↔ Brunoy"),
+    b('444','444','Bus 444',"Évry ↔ Yerres"),
+    b('450','450','Bus 450',"Melun ↔ Sénart"),
+    b('451','451','Bus 451',"Melun ↔ Moissy-Cramayel"),
+    b('460','460','Bus 460',"Créteil ↔ Boissy-Saint-Léger"),
+    b('462','462','Bus 462',"Villeneuve-Saint-Georges ↔ Boissy-Saint-Léger"),
+    b('470','470','Bus 470',"Évry ↔ Rungis"),
+    b('474','474','Bus 474',"Villejuif ↔ Évry"),
+    b('480','480','Bus 480',"Évry ↔ Arpajon"),
+    b('484','484','Bus 484',"Évry ↔ Montlhéry"),
+    b('485','485','Bus 485',"Évry ↔ Brétigny-sur-Orge"),
+    b('488','488','Bus 488',"Massy RER ↔ Brétigny-sur-Orge"),
+    b('489','489','Bus 489',"Palaiseau ↔ Dourdan"),
+    b('490','490','Bus 490',"Massy ↔ Dourdan"),
+  ]}
+];
+
+const STORAGE_KEY='idf_tracker_v4';
+function loadState(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||{};}catch{return{};}}
+function saveState(s){localStorage.setItem(STORAGE_KEY,JSON.stringify(s));}
+let state=loadState();
+
+function buildAll(){
+  const main=document.getElementById('main');
+  const noResults=document.getElementById('no-results');
+  main.innerHTML='';
+  main.appendChild(noResults);
+  SECTIONS.forEach(sec=>{
+    const wrap=document.createElement('div');
+    wrap.className='section'+(sec.id==='metro'?' open':'');
+    wrap.dataset.section=sec.id;
+    const iconStyle=sec.isMetroIcon?"font-family:'Bebas Neue',sans-serif;font-size:18px;color:#fff;":"font-size:16px;";
+    wrap.innerHTML=`
+      <div class="section-header" data-toggle="${sec.id}">
+        <div class="section-icon" style="background:${sec.iconBg};${iconStyle}">${sec.icon}</div>
+        <div class="section-title-wrap">
+          <div class="section-title">${sec.title}</div>
+          <div class="section-subtitle">${sec.subtitle}</div>
+        </div>
+        <svg class="section-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M4 6l4 4 4-4" stroke="#f0ece4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="section-progress">
+        <div class="section-prog-row">
+          <span class="section-prog-count" id="prog-count-${sec.id}">0 / ${sec.lines.length}</span>
+          <span class="section-prog-pct" id="prog-pct-${sec.id}" style="color:${sec.accentColor}">0%</span>
+        </div>
+        <div class="prog-track"><div class="prog-fill" id="prog-fill-${sec.id}" style="background:${sec.accentColor};width:0%"></div></div>
+      </div>
+      <div class="section-body"><div class="section-lines" id="lines-${sec.id}"></div></div>
+    `;
+    main.appendChild(wrap);
+    const linesEl=wrap.querySelector(`#lines-${sec.id}`);
+    sec.lines.forEach(line=>linesEl.appendChild(buildCard(line)));
+    wrap.querySelector(`[data-toggle="${sec.id}"]`).addEventListener('click',()=>wrap.classList.toggle('open'));
+    updateSectionProgress(sec.id);
+  });
+  updateGlobal();
+}
+
+function buildCard(line){
+  const done=!!state[line.id];
+  const card=document.createElement('div');
+  card.className='line-card'+(done?' done':'');
+  card.dataset.id=line.id;
+  card.dataset.search=(line.num+' '+line.name+' '+line.termini).toLowerCase();
+  card.style.setProperty('--line-color',line.color);
+  card.style.setProperty('--badge-text',line.text);
+  card.style.setProperty('--line-glow',line.color+'55');
+  const stroke=line.text==='#fff'?'#fff':'#1a1a1a';
+  card.innerHTML=`
+    <div class="line-badge">${line.num}</div>
+    <div class="line-info">
+      <div class="line-name">${line.name}</div>
+      <div class="line-termini">${line.termini}</div>
+    </div>
+    <div class="check-box">
+      <svg viewBox="0 0 13 10" fill="none"><path d="M1.5 5L5 8.5L11.5 1.5" stroke="${stroke}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+  `;
+  card.addEventListener('click',()=>toggle(line.id));
+  return card;
+}
+
+function toggle(id){
+  state[id]=!state[id];
+  saveState(state);
+  document.querySelector(`.line-card[data-id="${id}"]`)?.classList.toggle('done',!!state[id]);
+  const secId=getSectionForLine(id);
+  if(secId)updateSectionProgress(secId);
+  updateGlobal();
+  if(state[id]){const l=findLine(id);if(l)showToast('✓ '+l.name+' faite !');}
+}
+
+function getSectionForLine(lid){for(const s of SECTIONS)if(s.lines.find(l=>l.id===lid))return s.id;return null;}
+function findLine(lid){for(const s of SECTIONS){const l=s.lines.find(l=>l.id===lid);if(l)return l;}return null;}
+
+function updateSectionProgress(secId){
+  const sec=SECTIONS.find(s=>s.id===secId);
+  if(!sec)return;
+  const total=sec.lines.length;
+  const done=sec.lines.filter(l=>state[l.id]).length;
+  const pct=Math.round((done/total)*100);
+  document.getElementById(`prog-count-${secId}`).textContent=`${done} / ${total}`;
+  document.getElementById(`prog-pct-${secId}`).textContent=pct+'%';
+  document.getElementById(`prog-fill-${secId}`).style.width=pct+'%';
+}
+
+function updateGlobal(){
+  let total=0,done=0;
+  SECTIONS.forEach(s=>{total+=s.lines.length;done+=s.lines.filter(l=>state[l.id]).length;});
+  document.getElementById('global-count').textContent=`${done} / ${total}`;
+}
+
+const searchInput=document.getElementById('search-input');
+const clearBtn=document.getElementById('clear-btn');
+searchInput.addEventListener('input',()=>{const q=searchInput.value.trim().toLowerCase();clearBtn.style.display=q?'block':'none';applySearch(q);});
+clearBtn.addEventListener('click',()=>{searchInput.value='';clearBtn.style.display='none';applySearch('');});
+
+function applySearch(q){
+  let anyVisible=false;
+  SECTIONS.forEach(sec=>{
+    const sectionEl=document.querySelector(`[data-section="${sec.id}"]`);
+    let secHasVisible=false;
+    sectionEl.querySelectorAll('.line-card').forEach(card=>{
+      const matches=!q||card.dataset.search.includes(q);
+      card.classList.toggle('hidden',!matches);
+      if(matches)secHasVisible=true;
+    });
+    if(q)sectionEl.classList.toggle('open',secHasVisible);
+    sectionEl.style.display=secHasVisible?'':'none';
+    if(secHasVisible)anyVisible=true;
+  });
+  document.getElementById('no-results').style.display=anyVisible?'none':'block';
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+buildAll();
+</script>
+</body>
+</html>
