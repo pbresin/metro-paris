@@ -14,20 +14,33 @@
     :root{--bg:#0d0d0d;--surface:#161616;--surface2:#1e1e1e;--border:rgba(255,255,255,0.07);--text:#f0ece4;--muted:rgba(240,236,228,0.4)}
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100dvh;-webkit-tap-highlight-color:transparent}
+
+    /* ── HEADER ── */
     header{position:sticky;top:0;z-index:100;background:var(--bg);padding-top:env(safe-area-inset-top,0);border-bottom:1px solid var(--border)}
     .header-top{display:flex;align-items:center;gap:10px;padding:16px 16px 10px}
     .logo-m{width:34px;height:34px;background:#662483;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:20px;color:#fff;flex-shrink:0;box-shadow:0 0 16px rgba(102,36,131,.5)}
     h1{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:.04em;flex:1}
     .global-count{font-size:12px;color:var(--muted);letter-spacing:.06em;white-space:nowrap}
+
+    /* ── BACKUP BAR ── */
+    .backup-bar{display:flex;gap:8px;padding:0 16px 12px}
+    .backup-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 12px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;-webkit-tap-highlight-color:transparent}
+    .backup-btn:active{opacity:.7}
+    .backup-btn.export{border-color:rgba(184,150,12,.3);color:#C8A400}
+    .backup-btn.import{border-color:rgba(74,175,74,.3);color:#4aaf4a}
+    #import-file{display:none}
+
+    /* ── SEARCH ── */
     .search-wrap{padding:0 16px 12px}
     .search-box{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:9px 12px}
     .search-box svg{flex-shrink:0;opacity:.4}
     .search-box input{background:none;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;width:100%}
     .search-box input::placeholder{color:var(--muted)}
     .clear-btn{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;padding:0 2px;display:none}
+
     main{padding:12px 16px calc(40px + env(safe-area-inset-bottom,0))}
 
-    /* ── SECTIONS PRINCIPALES ── */
+    /* ── SECTIONS ── */
     .section{margin-bottom:10px;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--surface)}
     .section-header{display:flex;align-items:center;gap:10px;padding:14px 16px 10px;cursor:pointer;user-select:none;-webkit-user-select:none}
     .section-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
@@ -61,7 +74,7 @@
     .subcat.open .subcat-body{max-height:999999px}
     .subcat-lines{padding:0 8px 8px}
 
-    /* ── CARTES DE LIGNE ── */
+    /* ── CARTES ── */
     .line-card{display:flex;align-items:center;gap:12px;padding:10px 11px;margin-bottom:5px;background:var(--surface2);border:1px solid var(--border);border-radius:11px;cursor:pointer;user-select:none;-webkit-user-select:none;transition:transform .1s ease,opacity .2s ease;position:relative;overflow:hidden}
     .line-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--line-color,#555);opacity:.7}
     .line-card:active{transform:scale(.98)}
@@ -78,17 +91,42 @@
     .check-box svg{width:10px;height:10px;opacity:0;transform:scale(0);transition:all .2s cubic-bezier(.34,1.56,.64,1) .05s}
     .line-card.done .check-box svg{opacity:1;transform:scale(1)}
 
+    /* ── MODAL BACKUP ── */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:flex;align-items:flex-end;justify-content:center;padding:0 0 env(safe-area-inset-bottom,0)}
+    .modal-overlay.hidden{display:none}
+    .modal{background:#1a1a1a;border:1px solid var(--border);border-radius:20px 20px 0 0;padding:24px 20px;width:100%;max-width:480px}
+    .modal h2{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.04em;margin-bottom:8px}
+    .modal p{font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.5}
+    .modal textarea{width:100%;height:140px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:monospace;font-size:11px;padding:10px;resize:none;outline:none;margin-bottom:12px}
+    .modal-btns{display:flex;gap:8px}
+    .modal-btn{flex:1;padding:12px;border-radius:10px;border:none;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer}
+    .modal-btn.primary{background:#C8A400;color:#1a1a1a}
+    .modal-btn.secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
+    .modal-ok{color:#4aaf4a;font-size:12px;text-align:center;margin-top:8px;display:none}
+
     .no-results{text-align:center;padding:40px 20px;color:var(--muted);font-size:14px;display:none}
     .toast{position:fixed;bottom:calc(24px + env(safe-area-inset-bottom,0));left:50%;transform:translateX(-50%) translateY(80px);background:var(--text);color:#0d0d0d;padding:9px 18px;border-radius:50px;font-size:13px;font-weight:500;white-space:nowrap;z-index:999;transition:transform .35s cubic-bezier(.34,1.56,.64,1);pointer-events:none}
     .toast.show{transform:translateX(-50%) translateY(0)}
   </style>
 </head>
 <body>
+
 <header>
   <div class="header-top">
     <div class="logo-m">M</div>
     <h1>Mon Réseau IDF</h1>
     <div class="global-count" id="global-count">0 / 0</div>
+  </div>
+  <div class="backup-bar">
+    <button class="backup-btn export" onclick="openExport()">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1v8M3 6l3.5 3.5L10 6M1 11.5h11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Exporter mes coches
+    </button>
+    <button class="backup-btn import" onclick="document.getElementById('import-file').click()">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 9V1M3 4l3.5-3.5L10 4M1 11.5h11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Importer
+    </button>
+    <input type="file" id="import-file" accept=".json" onchange="importFromFile(event)"/>
   </div>
   <div class="search-wrap">
     <div class="search-box">
@@ -98,8 +136,26 @@
     </div>
   </div>
 </header>
+
 <main id="main"><div class="no-results" id="no-results">Aucune ligne trouvée</div></main>
+
+<!-- Modal export -->
+<div class="modal-overlay hidden" id="export-modal">
+  <div class="modal">
+    <h2>Exporter mes coches</h2>
+    <p>Copie ce code et garde-le précieusement. Il contient toutes tes lignes cochées. Tu pourras le réimporter plus tard.</p>
+    <textarea id="export-text" readonly></textarea>
+    <div class="modal-btns">
+      <button class="modal-btn primary" onclick="copyExport()">📋 Copier</button>
+      <button class="modal-btn secondary" onclick="downloadExport()">💾 Télécharger</button>
+      <button class="modal-btn secondary" onclick="closeModal()">Fermer</button>
+    </div>
+    <div class="modal-ok" id="copy-ok">✓ Copié !</div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
+
 <script>
 const BUS_DATA = {
   "Paris": [
@@ -166,113 +222,53 @@ const BUS_DATA = {
     {"num":"PC","t1":"Porte Maillot","t2":"Pont du Garigliano"},
   ],
   "Banlieue": [
-    {"num":"104","t1":"École Vétérinaire de Maisons-Alfort","t2":"Sucy–Bonneuil RER"},
-    {"num":"105","t1":"Porte des Lilas","t2":"Mairie des Pavillons sous Bois"},
-    {"num":"106","t1":"Joinville RER","t2":"Villiers sur Marne RER"},
-    {"num":"108","t1":"Joinville RER","t2":"Champigny (Jeanne Vacher)"},
-    {"num":"110","t1":"Joinville RER","t2":"Villiers sur Marne RER"},
-    {"num":"113","t1":"Nogent sur Marne RER","t2":"Chelles (Terre-Ciel)"},
-    {"num":"114","t1":"Château de Vincennes","t2":"Villemomble (Les Coquetiers)"},
-    {"num":"119","t1":"Les Baconnets RER","t2":"Vauhallan (Abbaye-Cimetière)"},
-    {"num":"120","t1":"Nogent sur Marne RER","t2":"Noisy le Grand Mont d'Est RER"},
-    {"num":"121","t1":"Mairie de Montreuil","t2":"Villemomble (Lycée Clemenceau)"},
-    {"num":"127","t1":"Croix de Chavaux","t2":"Neuilly sur Marne (Résistance)"},
-    {"num":"131","t1":"Porte d'Italie","t2":"Rungis–La Fraternelle RER"},
-    {"num":"131","t1":"Porte d'Italie","t2":"Villejuif (Ambroise Croizat)"},
-    {"num":"133","t1":"Sarcelles (Bois d'Écouen)","t2":"Le Bourget RER"},
-    {"num":"138","t1":"Saint Ouen RER","t2":"Ermont–Eaubonne RER"},
-    {"num":"140","t1":"Mairie de Saint Ouen","t2":"Gare d'Argenteuil"},
-    {"num":"145","t1":"Église de Pantin","t2":"Gare de Val de Fontenay"},
-    {"num":"146","t1":"Le Bourget RER","t2":"Montfermeil (Les Bosquets)"},
-    {"num":"147","t1":"Église de Pantin","t2":"Sevran (Ronsard)"},
-    {"num":"150","t1":"Porte de la Villette","t2":"Pierrefitte–Stains RER"},
-    {"num":"152","t1":"Porte de la Villette","t2":"Gonesse ZAC"},
-    {"num":"164","t1":"Porte de Champerret","t2":"Argenteuil (Collège Monet)"},
-    {"num":"168","t1":"Saint Denis–Université","t2":"Sarcelles (Chantepie)"},
-    {"num":"171","t1":"Pont de Sèvres","t2":"Château de Versailles"},
-    {"num":"171","t1":"Pont de Sèvres","t2":"Gare Chaville RD"},
-    {"num":"171","t1":"Pont de Sèvres","t2":"Gare Chaville RG"},
-    {"num":"182","t1":"Mairie d'Ivry","t2":"Villeneuve–Triage RER"},
-    {"num":"183","t1":"Marché de Rungis","t2":"Aéroport d'Orly 1-2-3"},
-    {"num":"196","t1":"Antony RER","t2":"Massy–Palaiseau RER"},
-    {"num":"197","t1":"Porte d'Orléans","t2":"Massy (Av. Saint Marc)"},
-    {"num":"199","t1":"Hôpital Paris-Saclay – Massy–Palaiseau RER","t2":"Longjumeau (Rocade–Lycée)"},
-    {"num":"199","t1":"Massy–Palaiseau RER","t2":"Saulx les Chartreux (Collège)"},
-    {"num":"203","t1":"Neuilly–Plaisance RER","t2":"Neuilly sur Marne (Bougainville)"},
-    {"num":"208","t1":"Champigny–St Maur RER","t2":"Champigny (Résistance)"},
-    {"num":"208","t1":"Champigny–St Maur RER","t2":"Le Plessis-Trévise (Verdun)"},
-    {"num":"210","t1":"Château de Vincennes","t2":"Villiers sur Marne RER"},
-    {"num":"214","t1":"Neuilly–Plaisance RER","t2":"Gagny (R. Salengro)"},
-    {"num":"216","t1":"Denfert-Rochereau","t2":"Marché de Rungis"},
-    {"num":"221","t1":"Bagnolet–Gallieni","t2":"Neuilly sur Marne (Pointe de Gournay)"},
-    {"num":"234","t1":"Fort d'Aubervilliers","t2":"Mairie de Livry-Gargan"},
-    {"num":"238","t1":"Pont de Levallois","t2":"Saint Gratien RER"},
-    {"num":"247","t1":"Aulnay (Garonor)","t2":"Drancy (Charles Sage)"},
-    {"num":"250","t1":"Fort d'Aubervilliers","t2":"Gonesse - ZI"},
-    {"num":"251","t1":"Bobigny (B. Frachon)","t2":"Aulnay RER"},
-    {"num":"252","t1":"Porte de la Chapelle","t2":"Garges–Sarcelles RER"},
-    {"num":"254","t1":"Gare de Saint Denis","t2":"Gare d'Enghien"},
-    {"num":"256","t1":"Saint Denis–Université","t2":"Gare d'Enghien"},
-    {"num":"259","t1":"Nanterre (Papeteries)","t2":"Saint Germain en Laye RER"},
-    {"num":"261","t1":"Villeneuve la Garenne (Bongarde)","t2":"Gare de Franconville RER"},
-    {"num":"268","t1":"St Denis–Université","t2":"Villiers le Bel RER"},
-    {"num":"269","t1":"Garges–Sarcelles RER","t2":"Hôtel de Ville d'Attainville"},
-    {"num":"270","t1":"Stains (La Cerisaie)","t2":"Villiers le Bel RER"},
-    {"num":"270","t1":"Garges (Place du 19 Mars 1962)","t2":"Garges–Sarcelles RER"},
-    {"num":"272","t1":"Gare d'Argenteuil","t2":"Sartrouville RER"},
-    {"num":"283","t1":"Denfert-Rochereau","t2":"Aéroport d'Orly (Orly 4)"},
-    {"num":"285","t1":"Porte de l'Essonne","t2":"Juvisy RER"},
-    {"num":"292","t1":"Porte de l'Essonne","t2":"Savigny (Les Gâtines)"},
-    {"num":"294","t1":"Châtillon–Montrouge (P. Sémard)","t2":"Igny RER"},
-    {"num":"297","t1":"Antony RER","t2":"Longjumeau (Charles Steber)"},
-    {"num":"299","t1":"Porte d'Orléans","t2":"Morangis (L. Boilleau)"},
-    {"num":"303","t1":"Bobigny (P. Picasso)","t2":"Noisy le Grand (Mont d'Est RER)"},
-    {"num":"306","t1":"Saint Maur–Créteil RER","t2":"Noisy le Grand (Mont d'Est RER)"},
-    {"num":"308","t1":"Créteil (Préfecture du Val de Marne)","t2":"Villiers sur Marne RER"},
-    {"num":"311","t1":"Chelles (Terre-Ciel)","t2":"Noisiel RER"},
-    {"num":"319","t1":"Massy–Palaiseau RER","t2":"Marché de Rungis"},
-    {"num":"337","t1":"Deuil la Barre (ZA du Moutier)","t2":"Pierrefitte–Stains RER"},
-    {"num":"340","t1":"Gare d'Argenteuil","t2":"Asnières–Gennevilliers (G.Péri)"},
-    {"num":"350","t1":"Porte de la Chapelle","t2":"Roissypole"},
-    {"num":"351","t1":"Nation–Trône","t2":"Roissypole"},
-    {"num":"352","t1":"Opéra","t2":"Aéroport CDG"},
-    {"num":"355","t1":"Sarcelles (Lycée Rousseau)","t2":"Sarcelles (Lycée Rousseau)"},
-    {"num":"356","t1":"St Denis (Cité Floréal)","t2":"Deuil la Barre (Mortefontaines)"},
-    {"num":"361","t1":"Pierrefitte–Stains RER","t2":"Gare d'Argenteuil"},
-    {"num":"367","t1":"Rueil-Malmaison RER","t2":"Pont de Bezons"},
-    {"num":"368","t1":"Garges–Sarcelles RER","t2":"Sarcelles (Souvenir Français)"},
-    {"num":"370","t1":"Villiers le Bel RER","t2":"Marché de Saint-Brice"},
-    {"num":"378","t1":"Nanterre-Ville RER","t2":"Les Courtilles"},
-    {"num":"382","t1":"Gare de Thiais-Orly","t2":"Les Ardoines RER"},
-    {"num":"385","t1":"Juvisy RER","t2":"Épinay sur Orge RER"},
-    {"num":"393","t1":"Thiais (Résistance)","t2":"Sucy–Bonneuil RER"},
-    {"num":"399","t1":"Massy–Palaiseau RER","t2":"Juvisy RER"},
     {"num":"101","t1":"Joinville RER","t2":"Champigny (Camping International)"},
     {"num":"102","t1":"Gambetta–Japon","t2":"Rosny–Bois Perrier RER"},
     {"num":"103","t1":"École Vétérinaire de Maisons-Alfort","t2":"Thiais (G. Halgoult)"},
+    {"num":"104","t1":"École Vétérinaire de Maisons-Alfort","t2":"Sucy–Bonneuil RER"},
+    {"num":"105","t1":"Porte des Lilas","t2":"Mairie des Pavillons sous Bois"},
+    {"num":"106","t1":"Joinville RER","t2":"Villiers sur Marne RER"},
     {"num":"107","t1":"École Vétérinaire de Maisons-Alfort","t2":"Saint Maur (La Pie)"},
+    {"num":"108","t1":"Joinville RER","t2":"Champigny (Jeanne Vacher)"},
     {"num":"109","t1":"Terroirs de France","t2":"Charenton (Liberté-Chanzy)"},
+    {"num":"110","t1":"Joinville RER","t2":"Villiers sur Marne RER"},
     {"num":"111","t1":"Terroirs de France","t2":"Champigny–St Maur RER"},
     {"num":"112","t1":"Château de Vincennes","t2":"La Varenne–Chennevières RER"},
+    {"num":"113","t1":"Nogent sur Marne RER","t2":"Chelles (Terre-Ciel)"},
+    {"num":"114","t1":"Château de Vincennes","t2":"Villemomble (Les Coquetiers)"},
     {"num":"115","t1":"Château de Vincennes","t2":"Porte des Lilas"},
     {"num":"116","t1":"Champigny–St Maur RER","t2":"Montreuil (Boissière-Acacia)"},
     {"num":"117","t1":"Champigny–St Maur RER","t2":"Créteil (Préfecture du Val de Marne)"},
     {"num":"118","t1":"Château de Vincennes","t2":"Gare de Val de Fontenay"},
+    {"num":"119","t1":"Les Baconnets RER","t2":"Vauhallan (Abbaye-Cimetière)"},
+    {"num":"120","t1":"Nogent sur Marne RER","t2":"Noisy le Grand Mont d'Est RER"},
+    {"num":"121","t1":"Mairie de Montreuil","t2":"Villemomble (Lycée Clemenceau)"},
     {"num":"122","t1":"Bagnolet–Gallieni","t2":"Val de Fontenay RER"},
     {"num":"123","t1":"Porte d'Auteuil","t2":"Mairie d'Issy"},
     {"num":"124","t1":"Château de Vincennes","t2":"Montreuil (Boissière-Acacia)"},
     {"num":"125","t1":"Porte d'Orléans","t2":"École Vétérinaire de Maisons-Alfort"},
     {"num":"126","t1":"Parc de Saint Cloud","t2":"Porte d'Orléans"},
+    {"num":"127","t1":"Croix de Chavaux","t2":"Neuilly sur Marne (Résistance)"},
     {"num":"128","t1":"Porte d'Orléans","t2":"Robinson RER"},
     {"num":"129","t1":"Romainville (Vassou)","t2":"Mairie de Montreuil"},
+    {"num":"131","t1":"Porte d'Italie","t2":"Rungis–La Fraternelle RER"},
+    {"num":"131","t1":"Porte d'Italie","t2":"Villejuif (Ambroise Croizat)"},
     {"num":"132","t1":"Bibliothèque Fr. Mitterrand","t2":"Vitry (Moulin Vert)"},
+    {"num":"133","t1":"Sarcelles (Bois d'Écouen)","t2":"Le Bourget RER"},
     {"num":"137","t1":"Porte de Clignancourt","t2":"Villeneuve la Garenne (ZI Nord)"},
+    {"num":"138","t1":"Saint Ouen RER","t2":"Ermont–Eaubonne RER"},
     {"num":"139","t1":"Porte de la Villette","t2":"Saint Denis (Ampère)"},
+    {"num":"140","t1":"Mairie de Saint Ouen","t2":"Gare d'Argenteuil"},
     {"num":"141","t1":"La Défense","t2":"Lycée de Rueil"},
     {"num":"143","t1":"La Courneuve–Aubervilliers RER","t2":"Rosny  RER"},
     {"num":"144","t1":"La Défense","t2":"Rueil-Malmaison RER"},
+    {"num":"145","t1":"Église de Pantin","t2":"Gare de Val de Fontenay"},
+    {"num":"146","t1":"Le Bourget RER","t2":"Montfermeil (Les Bosquets)"},
+    {"num":"147","t1":"Église de Pantin","t2":"Sevran (Ronsard)"},
     {"num":"148","t1":"Bobigny (P. Picasso)","t2":"Le Blanc-Mesnil (Musée de l'Air et de l'Espace)"},
+    {"num":"150","t1":"Porte de la Villette","t2":"Pierrefitte–Stains RER"},
     {"num":"151","t1":"Porte de Pantin","t2":"Bondy (Jouhaux–Blum)"},
+    {"num":"152","t1":"Porte de la Villette","t2":"Gonesse ZAC"},
     {"num":"153","t1":"Porte de la Chapelle","t2":"Stains (Moulin Neuf)"},
     {"num":"157","t1":"Pont de Neuilly","t2":"Nanterre (Boulevard de la Seine)"},
     {"num":"158","t1":"Pont de Neuilly","t2":"Rueil-Malmaison RER"},
@@ -281,11 +277,16 @@ const BUS_DATA = {
     {"num":"162","t1":"Meudon-Val Fleury RER","t2":"Villejuif (L. Aragon)"},
     {"num":"162","t1":"Clamart (Parc Maison Blanche)","t2":"Villejuif (L. Aragon)"},
     {"num":"163","t1":"Porte de Clichy","t2":"Nanterre–Préfecture RER"},
+    {"num":"164","t1":"Porte de Champerret","t2":"Argenteuil (Collège Monet)"},
     {"num":"165","t1":"Porte de Champerret","t2":"Asnières (18 Juin 1940)"},
     {"num":"166","t1":"Porte de Clignancourt","t2":"Gennevilliers (ZAC des Louvresses)"},
     {"num":"167","t1":"Pont de Levallois","t2":"Colombes (Piscine–Patinoire)"},
+    {"num":"168","t1":"Saint Denis–Université","t2":"Sarcelles (Chantepie)"},
     {"num":"169","t1":"Pont de Sèvres","t2":"Hôpital Pompidou"},
     {"num":"170","t1":"Porte des Lilas","t2":"Gare de Saint Denis"},
+    {"num":"171","t1":"Pont de Sèvres","t2":"Château de Versailles"},
+    {"num":"171","t1":"Pont de Sèvres","t2":"Gare Chaville RD"},
+    {"num":"171","t1":"Pont de Sèvres","t2":"Gare Chaville RG"},
     {"num":"172","t1":"Créteil (Hôpital Henri Mondor)","t2":"Bourg la Reine RER"},
     {"num":"173","t1":"Porte de Clichy","t2":"La Courneuve (8 Mai 1945)"},
     {"num":"174","t1":"La Défense","t2":"Saint Ouen RER"},
@@ -296,6 +297,8 @@ const BUS_DATA = {
     {"num":"179","t1":"Pont de Sèvres","t2":"Robinson RER"},
     {"num":"180","t1":"Charenton–Écoles","t2":"Villejuif (L. Aragon)"},
     {"num":"181","t1":"École Vétérinaire de Maisons-Alfort","t2":"Créteil (La Gaîté)"},
+    {"num":"182","t1":"Mairie d'Ivry","t2":"Villeneuve–Triage RER"},
+    {"num":"183","t1":"Marché de Rungis","t2":"Aéroport d'Orly 1-2-3"},
     {"num":"184","t1":"Porte d'Italie","t2":"Fresnes (Pasteur)"},
     {"num":"185","t1":"Porte d'Italie","t2":"Choisy Sud"},
     {"num":"186","t1":"Porte d'Italie","t2":"Fresnes (Roosevelt)"},
@@ -308,59 +311,112 @@ const BUS_DATA = {
     {"num":"193","t1":"Arcueil (Lénine)","t2":"Mairie de L'Haÿ-les-Roses"},
     {"num":"194","t1":"Porte d'Orléans","t2":"Châtenay-Malabry (Sophie Barat)"},
     {"num":"195","t1":"Châtillon–Montrouge (Métro)","t2":"Châtenay-Malabry (Lycée Polyvalent)"},
+    {"num":"196","t1":"Antony RER","t2":"Massy–Palaiseau RER"},
+    {"num":"197","t1":"Porte d'Orléans","t2":"Massy (Av. Saint Marc)"},
+    {"num":"199","t1":"Hôpital Paris-Saclay – Massy–Palaiseau RER","t2":"Longjumeau (Rocade–Lycée)"},
+    {"num":"199","t1":"Massy–Palaiseau RER","t2":"Saulx les Chartreux (Collège)"},
     {"num":"201","t1":"Porte Dorée","t2":"Champigny (Diderot–La Plage)"},
     {"num":"202","t1":"Porte de Montreuil","t2":"Montreuil (Boissière-Acacia)"},
+    {"num":"203","t1":"Neuilly–Plaisance RER","t2":"Neuilly sur Marne (Bougainville)"},
+    {"num":"208","t1":"Champigny–St Maur RER","t2":"Champigny (Résistance)"},
+    {"num":"208","t1":"Champigny–St Maur RER","t2":"Le Plessis-Trévise (Verdun)"},
+    {"num":"210","t1":"Château de Vincennes","t2":"Villiers sur Marne RER"},
+    {"num":"214","t1":"Neuilly–Plaisance RER","t2":"Gagny (R. Salengro)"},
     {"num":"215","t1":"Gare d'Austerlitz","t2":"Vincennes RER–République"},
+    {"num":"216","t1":"Denfert-Rochereau","t2":"Marché de Rungis"},
     {"num":"217","t1":"Vitry RER","t2":"Hôtel de Ville de Créteil"},
+    {"num":"221","t1":"Bagnolet–Gallieni","t2":"Neuilly sur Marne (Pointe de Gournay)"},
+    {"num":"234","t1":"Fort d'Aubervilliers","t2":"Mairie de Livry-Gargan"},
     {"num":"235","t1":"Colombes (Europe)","t2":"Asnières-Gennevilliers (G. Péri)"},
     {"num":"237","t1":"Porte de Saint-Ouen–Hôpital Bichat","t2":"Gare d'Épinay"},
+    {"num":"238","t1":"Pont de Levallois","t2":"Saint Gratien RER"},
     {"num":"238","t1":"Pont de Levallois","t2":"Gennevilliers (ZAC des Louvresses)"},
     {"num":"239","t1":"Rosa Parks–Curial RER","t2":"Saint Denis (Résistance)"},
     {"num":"240","t1":"Marché de Saint Denis","t2":"Saint Denis (Cité Floréal)"},
     {"num":"241","t1":"Porte d'Auteuil","t2":"Rueil-Malmaison RER"},
     {"num":"244","t1":"Porte Maillot","t2":"Rueil-Malmaison RER"},
     {"num":"245","t1":"Eglise de Pantin","t2":"Gare de Rosny–Bois Perrier"},
+    {"num":"247","t1":"Aulnay (Garonor)","t2":"Drancy (Charles Sage)"},
     {"num":"248","t1":"Fort d'Aubervilliers","t2":"Drancy RER"},
     {"num":"249","t1":"Porte des Lilas","t2":"Dugny (Pl. Valérie André)"},
+    {"num":"250","t1":"Fort d'Aubervilliers","t2":"Gonesse - ZI"},
+    {"num":"251","t1":"Bobigny (B. Frachon)","t2":"Aulnay RER"},
+    {"num":"252","t1":"Porte de la Chapelle","t2":"Garges–Sarcelles RER"},
     {"num":"253","t1":"La Courneuve-Aubervilliers RER","t2":"Stains (Moulin Neuf)"},
+    {"num":"254","t1":"Gare de Saint Denis","t2":"Gare d'Enghien"},
     {"num":"255","t1":"Porte de Clignancourt","t2":"Stains (Les Prévoyants)"},
+    {"num":"256","t1":"Saint Denis–Université","t2":"Gare d'Enghien"},
     {"num":"258","t1":"La Défense","t2":"Rueil-Malmaison (La Jonchère)"},
+    {"num":"259","t1":"Nanterre (Papeteries)","t2":"Saint Germain en Laye RER"},
     {"num":"260","t1":"Boulogne (Gambetta)","t2":"Suzanne Lenglen"},
+    {"num":"261","t1":"Villeneuve la Garenne (Bongarde)","t2":"Gare de Franconville RER"},
     {"num":"263","t1":"Nanterre (La Boule)","t2":"Suresnes (Pasteur–Val d'Or)"},
+    {"num":"268","t1":"St Denis–Université","t2":"Villiers le Bel RER"},
+    {"num":"269","t1":"Garges–Sarcelles RER","t2":"Hôtel de Ville d'Attainville"},
+    {"num":"270","t1":"Stains (La Cerisaie)","t2":"Villiers le Bel RER"},
+    {"num":"270","t1":"Garges (Place du 19 Mars 1962)","t2":"Garges–Sarcelles RER"},
+    {"num":"272","t1":"Gare d'Argenteuil","t2":"Sartrouville RER"},
     {"num":"274","t1":"Porte des Ternes","t2":"Saint Denis RER"},
     {"num":"275","t1":"La Défense","t2":"Pont de Levallois"},
     {"num":"276","t1":"La Défense","t2":"Les Courtilles"},
     {"num":"277","t1":"Nanterre (A. France)","t2":"Asnières (Bords de Seine)"},
     {"num":"278","t1":"La Défense","t2":"Bois-Colombes (Les Bruyères)"},
     {"num":"281","t1":"Joinville RER","t2":"Créteil (Europarc)"},
+    {"num":"283","t1":"Denfert-Rochereau","t2":"Aéroport d'Orly (Orly 4)"},
+    {"num":"285","t1":"Porte de l'Essonne","t2":"Juvisy RER"},
     {"num":"286","t1":"Villejuif (L. Aragon)","t2":"Antony RER"},
     {"num":"289","t1":"Porte de Saint Cloud","t2":"Clamart (Pompidou)"},
     {"num":"290","t1":"Issy–Val de Seine RER","t2":"Le Plessis-Robinson (Boursidière)"},
     {"num":"291","t1":"Pont de Sèvres","t2":"Vélizy (La Cheminée)"},
+    {"num":"292","t1":"Porte de l'Essonne","t2":"Savigny (Les Gâtines)"},
+    {"num":"294","t1":"Châtillon–Montrouge (P. Sémard)","t2":"Igny RER"},
+    {"num":"297","t1":"Antony RER","t2":"Longjumeau (Charles Steber)"},
+    {"num":"299","t1":"Porte d'Orléans","t2":"Morangis (L. Boilleau)"},
     {"num":"301","t1":"Val de Fontenay RER","t2":"Bobigny (P. Picasso)"},
     {"num":"302","t1":"Gare du Nord","t2":"La Courneuve (6 Routes)"},
+    {"num":"303","t1":"Bobigny (P. Picasso)","t2":"Noisy le Grand (Mont d'Est RER)"},
     {"num":"304","t1":"Nanterre (La Boule)","t2":"Les Courtilles"},
+    {"num":"306","t1":"Saint Maur–Créteil RER","t2":"Noisy le Grand (Mont d'Est RER)"},
+    {"num":"308","t1":"Créteil (Préfecture du Val de Marne)","t2":"Villiers sur Marne RER"},
+    {"num":"311","t1":"Chelles (Terre-Ciel)","t2":"Noisiel RER"},
     {"num":"317","t1":"Hôtel de Ville de Créteil","t2":"Nogent-Le Perreux RER"},
     {"num":"318","t1":"Château de Vincennes","t2":"Pantin–Queneau"},
+    {"num":"319","t1":"Massy–Palaiseau RER","t2":"Marché de Rungis"},
     {"num":"322","t1":"Mairie de Montreuil","t2":"Bobigny (P. Picasso)"},
     {"num":"323","t1":"Issy–Val de Seine RER","t2":"Châtillon–Montrouge"},
     {"num":"323","t1":"Châtillon–Montrouge","t2":"Ivry (Gambetta)"},
     {"num":"325","t1":"Quai de la Gare","t2":"Château de Vincennes"},
+    {"num":"337","t1":"Deuil la Barre (ZA du Moutier)","t2":"Pierrefitte–Stains RER"},
+    {"num":"340","t1":"Gare d'Argenteuil","t2":"Asnières–Gennevilliers (G.Péri)"},
     {"num":"341","t1":"Charles de Gaulle-Étoile","t2":"Porte de Clignancourt"},
     {"num":"346","t1":"Rosny-Bois Perrier RER","t2":"Gare de Bondy RER"},
     {"num":"346","t1":"Gare de Bondy RER","t2":"Le Blanc-Mesnil (Libération)"},
+    {"num":"350","t1":"Porte de la Chapelle","t2":"Roissypole"},
+    {"num":"351","t1":"Nation–Trône","t2":"Roissypole"},
+    {"num":"352","t1":"Opéra","t2":"Aéroport CDG"},
     {"num":"353","t1":"Saint Denis-Université","t2":"Saint Denis (ZAC Landy Nord)"},
+    {"num":"355","t1":"Sarcelles (Lycée Rousseau)","t2":"Sarcelles (Lycée Rousseau)"},
+    {"num":"356","t1":"St Denis (Cité Floréal)","t2":"Deuil la Barre (Mortefontaines)"},
     {"num":"360","t1":"La Défense","t2":"Hôpital de Garches"},
+    {"num":"361","t1":"Pierrefitte–Stains RER","t2":"Gare d'Argenteuil"},
     {"num":"366","t1":"Église de Colombes","t2":"Asnières (Bords de Seine)"},
+    {"num":"367","t1":"Rueil-Malmaison RER","t2":"Pont de Bezons"},
+    {"num":"368","t1":"Garges–Sarcelles RER","t2":"Sarcelles (Souvenir Français)"},
+    {"num":"370","t1":"Villiers le Bel RER","t2":"Marché de Saint-Brice"},
     {"num":"372","t1":"Le Vert de Maisons RER","t2":"Maisons-Alfort (Quai de Marne)"},
+    {"num":"378","t1":"Nanterre-Ville RER","t2":"Les Courtilles"},
     {"num":"380","t1":"Arcueil–Vache Noire","t2":"Villejuif (L. Aragon)"},
+    {"num":"382","t1":"Gare de Thiais-Orly","t2":"Les Ardoines RER"},
+    {"num":"385","t1":"Juvisy RER","t2":"Épinay sur Orge RER"},
     {"num":"388","t1":"Porte d'Orléans","t2":"Bourg la Reine RER"},
     {"num":"389","t1":"Boulogne-Billancourt (Hôtel de Ville)","t2":"Clamart (Pompidou)"},
     {"num":"390","t1":"Bourg la Reine RER","t2":"Vélizy (Europe Sud)"},
     {"num":"391","t1":"Gare de Vanves-Malakoff","t2":"Bagneux-Pont Royal RER"},
+    {"num":"393","t1":"Thiais (Résistance)","t2":"Sucy–Bonneuil RER"},
     {"num":"394","t1":"Issy-Val de Seine RER","t2":"Bourg la Reine RER"},
     {"num":"395","t1":"Le Plessis-Robinson (Pavé Blanc)","t2":"Antony RER"},
     {"num":"396","t1":"La Croix de Berny RER","t2":"Marché de Rungis"},
+    {"num":"399","t1":"Massy–Palaiseau RER","t2":"Juvisy RER"},
     {"num":"595","t1":"Robinson RER","t2":"Le Plessis-Robinson (Boursidière)"},
     {"num":"Tvm","t1":"Saint Maur-Créteil RER","t2":"La Croix de Berny RER"},
   ],
@@ -392,14 +448,9 @@ const BUS_DATA = {
     {"num":"TITUS 2","t1":"Rosny RER","t2":"Plateau d'Avron"},
     {"num":"TUB","t1":"Bondy (La Mare à la Veuve","t2":"La Mare à la Veuve)"},
     {"num":"TUC","t1":"Mairie de Clichy (Métro)","t2":"Mairie de Clichy"},
-    {"num":"TUC","t1":"Rue Martre–Mairie de Clichy","t2":"Mairie de Clichy"},
-    {"num":"TUVIM","t1":"Mairie d'Issy","t2":"Mairie d'Issy"},
-    {"num":"TUVIM","t1":"Mairie d'Issy","t2":"Mairie d'Issy"},
     {"num":"TUVIM","t1":"Mairie d'Issy","t2":"Mairie d'Issy"},
   ],
   "Local": [
-    {"num":"538","t1":"Les Courtilles","t2":"Gennevilliers (Port Logistique)"},
-    {"num":"538","t1":"Colombes (Gare du Stade)","t2":"Gennevilliers (Port Logistique)"},
     {"num":"538","t1":"Colombes (Gare du Stade)","t2":"Gennevilliers (Port Pétrolier)"},
     {"num":"v2","t1":"Fresnes (Pasteur)","t2":"L'Haÿ les Roses (Domaine Chérioux)"},
     {"num":"v3","t1":"Cachan (Centre-Ville)","t2":"Cachan (Centre-Ville)"},
@@ -490,6 +541,7 @@ const FIXED_SECTIONS = [
   {
     id:'tram',title:'Tramways',subtitle:'Petite couronne',icon:'🚋',iconBg:'#0d1a1a',accentColor:'#00A89D',
     lines:[
+      {id:'tc1',num:'C1',name:'Tram C1',termini:'Villeneuve-Saint-Georges Villa Nova ↔ Créteil Pointe du Lac',color:'#007AB3',text:'#fff'},
       {id:'t1',num:'T1',name:'Tram T1',termini:'Asnières–Gennevilliers ↔ Noisy-le-Sec',color:'#00A89D',text:'#fff'},
       {id:'t2',num:'T2',name:'Tram T2',termini:'La Défense ↔ Porte de Versailles',color:'#E2231A',text:'#fff'},
       {id:'t3a',num:'T3a',name:'Tram T3a',termini:"Pont du Garigliano ↔ Porte d'Ivry",color:'#0055A4',text:'#fff'},
@@ -502,36 +554,107 @@ const FIXED_SECTIONS = [
       {id:'t9',num:'T9',name:'Tram T9',termini:'Orly ↔ Porte de Choisy',color:'#E67E22',text:'#fff'},
       {id:'t10',num:'T10',name:'Tram T10',termini:'Antony ↔ Clamart',color:'#1ABC9C',text:'#fff'},
       {id:'t11',num:'T11',name:'Tram T11',termini:'Épinay-sur-Seine ↔ Le Bourget RER',color:'#8E44AD',text:'#fff'},
+      {id:'t12',num:'T12',name:'Tram T12',termini:'Évry-Courcouronnes ↔ Massy-Palaiseau',color:'#C0392B',text:'#fff'},
       {id:'t13',num:'T13',name:'Tram T13',termini:'Saint-Germain-en-Laye ↔ Achères / Poissy',color:'#27AE60',text:'#fff'},
     ]
   }
 ];
 
-// ── CONFIG SOUS-CATÉGORIES BUS ─────────────────────────────────────────────
 const BUS_SUBCATS = [
-  {key:'Paris',    label:'Paris',     badge:'Paris',    badgeBg:'#1a3a6e', badgeText:'#7ab0ff', barColor:'#4a90d9'},
-  {key:'Banlieue', label:'Banlieue',  badge:'Banlieue', badgeBg:'#1a3a1a', badgeText:'#7acc7a', barColor:'#4aad4a'},
-  {key:'Traverse', label:'Traverses', badge:'Traverse', badgeBg:'#3a2a1a', badgeText:'#ffa050', barColor:'#d4820a'},
-  {key:'Urbain',   label:'Urbain',    badge:'Urbain',   badgeBg:'#2a1a3a', badgeText:'#c080ff', barColor:'#8040c0'},
-  {key:'Local',    label:'Local',     badge:'Local',    badgeBg:'#1a2a2a', badgeText:'#60cccc', barColor:'#309090'},
-  {key:'Noctilien',label:'Noctilien', badge:'Noctilien',badgeBg:'#0d0d2a', badgeText:'#a0a0ff', barColor:'#4040d0'},
+  {key:'Paris',    label:'Paris',     badge:'Paris',    badgeBg:'#1a3a6e',badgeText:'#7ab0ff',barColor:'#4a90d9'},
+  {key:'Banlieue', label:'Banlieue',  badge:'Banlieue', badgeBg:'#1a3a1a',badgeText:'#7acc7a',barColor:'#4aad4a'},
+  {key:'Traverse', label:'Traverses', badge:'Traverse', badgeBg:'#3a2a1a',badgeText:'#ffa050',barColor:'#d4820a'},
+  {key:'Urbain',   label:'Urbain',    badge:'Urbain',   badgeBg:'#2a1a3a',badgeText:'#c080ff',barColor:'#8040c0'},
+  {key:'Local',    label:'Local',     badge:'Local',    badgeBg:'#1a2a2a',badgeText:'#60cccc',barColor:'#309090'},
+  {key:'Noctilien',label:'Noctilien', badge:'Noctilien',badgeBg:'#0d0d2a',badgeText:'#a0a0ff',barColor:'#4040d0'},
 ];
 
-// ── COULEUR BUS ────────────────────────────────────────────────────────────
 const BUS_COLOR = '#B8960C';
 const BUS_TEXT  = '#1a1a1a';
-
-// ── STATE ──────────────────────────────────────────────────────────────────
 const STORAGE_KEY = 'idf_tracker_v4';
+
 function loadState(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||{};}catch{return{};}}
 function saveState(s){localStorage.setItem(STORAGE_KEY,JSON.stringify(s));}
 let state = loadState();
 
-// ── HELPERS ────────────────────────────────────────────────────────────────
-function busId(cat, num){ return 'bus_' + cat + '_' + String(num).replace(/\s/g,'_'); }
+// ── BACKUP ────────────────────────────────────────────────────────────────
+function openExport(){
+  const checked = Object.keys(state).filter(k=>state[k]);
+  const payload = {
+    version: 1,
+    date: new Date().toISOString().slice(0,10),
+    app: 'idf_tracker_v4',
+    checked
+  };
+  document.getElementById('export-text').value = JSON.stringify(payload, null, 2);
+  document.getElementById('export-modal').classList.remove('hidden');
+  document.getElementById('copy-ok').style.display='none';
+}
 
-function chevronSVG(){
-  return '<svg class="section-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="#f0ece4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+function closeModal(){
+  document.getElementById('export-modal').classList.add('hidden');
+}
+
+function copyExport(){
+  const ta = document.getElementById('export-text');
+  ta.select();
+  try {
+    navigator.clipboard.writeText(ta.value).catch(()=>document.execCommand('copy'));
+  } catch { document.execCommand('copy'); }
+  const ok = document.getElementById('copy-ok');
+  ok.style.display='block';
+  setTimeout(()=>ok.style.display='none', 2000);
+}
+
+function downloadExport(){
+  const text = document.getElementById('export-text').value;
+  const blob = new Blob([text], {type:'application/json'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url;
+  a.download = 'idf-coches-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importFromFile(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const payload = JSON.parse(ev.target.result);
+      if(!payload.checked || !Array.isArray(payload.checked))
+        throw new Error('Format invalide');
+      const newState = {};
+      payload.checked.forEach(k=>newState[k]=true);
+      // Fusionner avec l'état actuel (on garde les coches déjà présentes)
+      const merged = {...state, ...newState};
+      Object.assign(state, merged);
+      saveState(state);
+      // Rafraîchir toutes les cartes
+      document.querySelectorAll('.line-card').forEach(card=>{
+        card.classList.toggle('done', !!state[card.dataset.id]);
+      });
+      refreshAllProgress();
+      showToast('✓ ' + payload.checked.length + ' coches importées !');
+    } catch(err) {
+      showToast('❌ Fichier invalide');
+    }
+    e.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+// Fermer modal en cliquant l'overlay
+document.addEventListener('click', e=>{
+  if(e.target.id==='export-modal') closeModal();
+});
+
+// ── HELPERS ───────────────────────────────────────────────────────────────
+function busId(cat,num){return 'bus_'+cat+'_'+String(num).replace(/\s/g,'_');}
+function chevronSVG(cls){
+  return `<svg class="${cls}" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="#f0ece4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 }
 
 function buildCard(line){
@@ -540,9 +663,9 @@ function buildCard(line){
   card.className = 'line-card'+(done?' done':'');
   card.dataset.id = line.id;
   card.dataset.search = (line.num+' '+(line.name||'')+' '+(line.termini||'')).toLowerCase();
-  card.style.setProperty('--line-color', line.color);
-  card.style.setProperty('--badge-text', line.text);
-  card.style.setProperty('--line-glow', line.color+'55');
+  card.style.setProperty('--line-color',line.color);
+  card.style.setProperty('--badge-text',line.text);
+  card.style.setProperty('--line-glow',line.color+'55');
   const stroke = line.text==='#fff'?'#fff':'#1a1a1a';
   card.innerHTML = `
     <div class="line-badge">${line.num}</div>
@@ -553,12 +676,11 @@ function buildCard(line){
     <div class="check-box">
       <svg viewBox="0 0 13 10" fill="none"><path d="M1.5 5L5 8.5L11.5 1.5" stroke="${stroke}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </div>`;
-  card.addEventListener('click', ()=>toggle(line.id, line.name||'Bus '+line.num));
+  card.addEventListener('click',()=>toggle(line.id,line.name||'Bus '+line.num));
   return card;
 }
 
-// ── TOGGLE ────────────────────────────────────────────────────────────────
-function toggle(id, name){
+function toggle(id,name){
   state[id]=!state[id];
   saveState(state);
   document.querySelector(`.line-card[data-id="${id}"]`)?.classList.toggle('done',!!state[id]);
@@ -567,67 +689,58 @@ function toggle(id, name){
 }
 
 // ── PROGRESS ──────────────────────────────────────────────────────────────
-function setProgress(countEl, pctEl, fillEl, done, total){
-  if(!countEl) return;
-  const pct = total ? Math.round((done/total)*100) : 0;
-  countEl.textContent = done+' / '+total;
-  if(pctEl)  pctEl.textContent = pct+'%';
-  if(fillEl) fillEl.style.width = pct+'%';
+function setProgress(countEl,pctEl,fillEl,done,total){
+  if(!countEl)return;
+  const pct=total?Math.round((done/total)*100):0;
+  countEl.textContent=done+' / '+total;
+  if(pctEl)pctEl.textContent=pct+'%';
+  if(fillEl)fillEl.style.width=pct+'%';
 }
 
 function refreshAllProgress(){
-  // Sections fixes
   FIXED_SECTIONS.forEach(sec=>{
-    const cards = [...document.querySelectorAll(`#lines-${sec.id} .line-card`)];
-    const done  = cards.filter(c=>state[c.dataset.id]).length;
+    const cards=[...document.querySelectorAll(`#lines-${sec.id} .line-card`)];
     setProgress(
       document.getElementById('prog-count-'+sec.id),
       document.getElementById('prog-pct-'+sec.id),
       document.getElementById('prog-fill-'+sec.id),
-      done, cards.length
+      cards.filter(c=>state[c.dataset.id]).length, cards.length
     );
   });
-  // Sous-catégories bus
   BUS_SUBCATS.forEach(sc=>{
-    const cards = [...document.querySelectorAll(`#subcat-lines-${sc.key} .line-card`)];
-    const done  = cards.filter(c=>state[c.dataset.id]).length;
+    const cards=[...document.querySelectorAll(`#subcat-lines-${sc.key} .line-card`)];
     setProgress(
-      document.getElementById('subcat-count-'+sc.key),
-      null,
+      document.getElementById('subcat-count-'+sc.key),null,
       document.getElementById('subcat-fill-'+sc.key),
-      done, cards.length
+      cards.filter(c=>state[c.dataset.id]).length,cards.length
     );
   });
-  // Total bus
-  const allBusCards = [...document.querySelectorAll('[data-section="bus"] .line-card')];
-  const busDone = allBusCards.filter(c=>state[c.dataset.id]).length;
+  const allBus=[...document.querySelectorAll('[data-section="bus"] .line-card')];
   setProgress(
     document.getElementById('prog-count-bus'),
     document.getElementById('prog-pct-bus'),
     document.getElementById('prog-fill-bus'),
-    busDone, allBusCards.length
+    allBus.filter(c=>state[c.dataset.id]).length,allBus.length
   );
-  // Global
-  const allCards = [...document.querySelectorAll('.line-card')];
-  const total = allCards.length;
-  const done  = allCards.filter(c=>state[c.dataset.id]).length;
-  document.getElementById('global-count').textContent = done+' / '+total;
+  const all=[...document.querySelectorAll('.line-card')];
+  document.getElementById('global-count').textContent=
+    all.filter(c=>state[c.dataset.id]).length+' / '+all.length;
 }
 
 // ── BUILD DOM ─────────────────────────────────────────────────────────────
 function buildFixedSection(sec){
-  const wrap = document.createElement('div');
-  wrap.className = 'section'+(sec.id==='metro'?' open':'');
-  wrap.dataset.section = sec.id;
-  const iconStyle = sec.isMetroIcon ? "font-family:'Bebas Neue',sans-serif;font-size:18px;color:#fff;" : "font-size:16px;";
-  wrap.innerHTML = `
+  const wrap=document.createElement('div');
+  wrap.className='section'+(sec.id==='metro'?' open':'');
+  wrap.dataset.section=sec.id;
+  const iconStyle=sec.isMetroIcon?"font-family:'Bebas Neue',sans-serif;font-size:18px;color:#fff;":"font-size:16px;";
+  wrap.innerHTML=`
     <div class="section-header" data-toggle="${sec.id}">
       <div class="section-icon" style="background:${sec.iconBg};${iconStyle}">${sec.icon}</div>
       <div class="section-title-wrap">
         <div class="section-title">${sec.title}</div>
         <div class="section-subtitle">${sec.subtitle}</div>
       </div>
-      ${chevronSVG()}
+      ${chevronSVG('section-chevron')}
     </div>
     <div class="section-progress">
       <div class="section-prog-row">
@@ -637,28 +750,24 @@ function buildFixedSection(sec){
       <div class="prog-track"><div class="prog-fill" id="prog-fill-${sec.id}" style="background:${sec.accentColor};width:0%"></div></div>
     </div>
     <div class="section-body"><div class="section-lines" id="lines-${sec.id}"></div></div>`;
-  const linesEl = wrap.querySelector('#lines-'+sec.id);
-  sec.lines.forEach(line=>linesEl.appendChild(buildCard(line)));
+  sec.lines.forEach(l=>wrap.querySelector('#lines-'+sec.id).appendChild(buildCard(l)));
   wrap.querySelector('[data-toggle]').addEventListener('click',()=>wrap.classList.toggle('open'));
   return wrap;
 }
 
 function buildBusSection(){
-  const wrap = document.createElement('div');
-  wrap.className = 'section';
-  wrap.dataset.section = 'bus';
-
-  // Compter total bus
-  const total = BUS_SUBCATS.reduce((s,sc)=>(s+(BUS_DATA[sc.key]||[]).length),0);
-
-  wrap.innerHTML = `
+  const total=BUS_SUBCATS.reduce((s,sc)=>s+(BUS_DATA[sc.key]||[]).length,0);
+  const wrap=document.createElement('div');
+  wrap.className='section';
+  wrap.dataset.section='bus';
+  wrap.innerHTML=`
     <div class="section-header" data-toggle="bus">
       <div class="section-icon" style="background:#1a1200;font-size:16px;">🚌</div>
       <div class="section-title-wrap">
         <div class="section-title">Bus RATP</div>
         <div class="section-subtitle">Paris & Île-de-France</div>
       </div>
-      ${chevronSVG()}
+      ${chevronSVG('section-chevron')}
     </div>
     <div class="section-progress">
       <div class="section-prog-row">
@@ -668,87 +777,77 @@ function buildBusSection(){
       <div class="prog-track"><div class="prog-fill" id="prog-fill-bus" style="background:#C8A400;width:0%"></div></div>
     </div>
     <div class="section-body" id="bus-body"></div>`;
-
   wrap.querySelector('[data-toggle]').addEventListener('click',()=>wrap.classList.toggle('open'));
-
-  const busBody = wrap.querySelector('#bus-body');
-
+  const busBody=wrap.querySelector('#bus-body');
   BUS_SUBCATS.forEach(sc=>{
-    const lines = BUS_DATA[sc.key]||[];
-    if(!lines.length) return;
-
-    const sub = document.createElement('div');
-    sub.className = 'subcat';
-    sub.dataset.subcat = sc.key;
-    sub.innerHTML = `
+    const lines=BUS_DATA[sc.key]||[];
+    if(!lines.length)return;
+    const sub=document.createElement('div');
+    sub.className='subcat';
+    sub.dataset.subcat=sc.key;
+    sub.innerHTML=`
       <div class="subcat-header">
         <div class="subcat-badge" style="background:${sc.badgeBg};color:${sc.badgeText}">${sc.badge}</div>
         <div class="subcat-title-wrap">
           <div class="subcat-title">${sc.label}</div>
           <div class="subcat-count" id="subcat-count-${sc.key}">0 / ${lines.length}</div>
         </div>
-        <svg class="subcat-chevron" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="#f0ece4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        ${chevronSVG('subcat-chevron')}
       </div>
       <div class="subcat-prog-track"><div class="subcat-prog-fill" id="subcat-fill-${sc.key}" style="background:${sc.barColor};width:0%"></div></div>
       <div class="subcat-body"><div class="subcat-lines" id="subcat-lines-${sc.key}"></div></div>`;
-
     sub.querySelector('.subcat-header').addEventListener('click',()=>sub.classList.toggle('open'));
     busBody.appendChild(sub);
-
-    const linesEl = sub.querySelector('#subcat-lines-'+sc.key);
+    const linesEl=sub.querySelector('#subcat-lines-'+sc.key);
     lines.forEach(l=>{
-      const id = busId(sc.key, l.num);
-      const termini = l.t1 && l.t2 ? l.t1+' ↔ '+l.t2 : (l.t1||l.t2||'');
-      const line = {id, num:l.num, name:'Bus '+l.num, termini, color:BUS_COLOR, text:BUS_TEXT};
-      // Noctilien : badge différent
-      if(sc.key==='Noctilien'){
-        line.color='#1a1a6e'; line.text='#a0a0ff'; line.name=l.num;
-      }
-      linesEl.appendChild(buildCard(line));
+      const id=busId(sc.key,l.num);
+      const termini=l.t1&&l.t2?l.t1+' ↔ '+l.t2:(l.t1||l.t2||'');
+      const isNoc=sc.key==='Noctilien';
+      linesEl.appendChild(buildCard({
+        id, num:l.num,
+        name: isNoc ? l.num : 'Bus '+l.num,
+        termini,
+        color: isNoc?'#1a1a6e':BUS_COLOR,
+        text:  isNoc?'#a0a0ff':BUS_TEXT
+      }));
     });
   });
-
   return wrap;
 }
 
 // ── RECHERCHE ─────────────────────────────────────────────────────────────
-const searchInput = document.getElementById('search-input');
-const clearBtn    = document.getElementById('clear-btn');
-
+const searchInput=document.getElementById('search-input');
+const clearBtn=document.getElementById('clear-btn');
 searchInput.addEventListener('input',()=>{
-  const q = searchInput.value.trim().toLowerCase();
-  clearBtn.style.display = q?'block':'none';
+  const q=searchInput.value.trim().toLowerCase();
+  clearBtn.style.display=q?'block':'none';
   applySearch(q);
 });
-clearBtn.addEventListener('click',()=>{
-  searchInput.value=''; clearBtn.style.display='none'; applySearch('');
-});
+clearBtn.addEventListener('click',()=>{searchInput.value='';clearBtn.style.display='none';applySearch('');});
 
 function applySearch(q){
   let anyVisible=false;
   document.querySelectorAll('.section').forEach(secEl=>{
     let secHas=false;
-    // Sous-catégories bus
     secEl.querySelectorAll('.subcat').forEach(subEl=>{
       let subHas=false;
       subEl.querySelectorAll('.line-card').forEach(card=>{
         const m=!q||card.dataset.search.includes(q);
         card.classList.toggle('hidden',!m);
-        if(m) subHas=true;
+        if(m)subHas=true;
       });
-      if(q) subEl.classList.toggle('open',subHas);
+      if(q)subEl.classList.toggle('open',subHas);
       subEl.style.display=subHas||!q?'':'none';
-      if(subHas) secHas=true;
+      if(subHas)secHas=true;
     });
-    // Cartes directes (sections fixes)
-    secEl.querySelectorAll('.section-lines > .line-card').forEach(card=>{
+    secEl.querySelectorAll('.section-lines>.line-card').forEach(card=>{
       const m=!q||card.dataset.search.includes(q);
       card.classList.toggle('hidden',!m);
-      if(m) secHas=true;
+      if(m)secHas=true;
     });
-    if(q) secEl.classList.toggle('open',secHas);
+    if(q)secEl.classList.toggle('open',secHas);
     secEl.style.display=secHas||!q?'':'none';
-    if(secHas||!q) anyVisible=true;
+    if(secHas||!q)anyVisible=true;
   });
   document.getElementById('no-results').style.display=anyVisible?'none':'block';
 }
@@ -756,16 +855,15 @@ function applySearch(q){
 // ── TOAST ─────────────────────────────────────────────────────────────────
 function showToast(msg){
   const t=document.getElementById('toast');
-  t.textContent=msg; t.classList.add('show');
+  t.textContent=msg;t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),2200);
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────
 function init(){
   const main=document.getElementById('main');
-  const noResults=document.getElementById('no-results');
-  main.innerHTML='';
-  main.appendChild(noResults);
+  const nr=document.getElementById('no-results');
+  main.innerHTML='';main.appendChild(nr);
   FIXED_SECTIONS.forEach(sec=>main.appendChild(buildFixedSection(sec)));
   main.appendChild(buildBusSection());
   refreshAllProgress();
